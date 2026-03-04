@@ -23,7 +23,7 @@
             display: flex;
             gap: 40px;
             align-items: flex-start;
-            flex: 1; /* Permite que o rodapé fique no final */
+            flex: 1;
         }
         
         .board-wrapper {
@@ -88,16 +88,22 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            width: 320px;
+            width: 340px; /* Levemente mais largo para acomodar textos maiores */
         }
+
+        /* Textos Gamificados */
         .current-turn { 
-            font-size: 22px; 
+            font-size: 32px; /* Fonte bem maior */
+            text-transform: uppercase; /* Tudo em maiúsculo */
+            letter-spacing: 1px;
             text-align: center; 
-            margin-bottom: 15px; 
-            font-weight: bold;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            margin-bottom: 10px; 
+            font-weight: 900;
+            border-bottom: 3px solid #eee;
+            padding-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
+
         .input-group {
             display: flex;
             flex-direction: column;
@@ -107,40 +113,52 @@
             border-radius: 8px;
             border: 1px solid #e9ecef;
         }
-        .input-label { font-weight: 600; color: #4b4b4b; }
-        .input-row { display: flex; gap: 10px; align-items: center; justify-content: center;}
+        .input-label { font-weight: 700; color: #2c3e50; font-size: 1.1em; }
+        .input-row { display: flex; gap: 10px; align-items: center; justify-content: center; font-weight: bold;}
         .coord-input {
             width: 60px;
             padding: 10px;
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: bold;
             text-align: center;
             border: 2px solid #ddd;
             border-radius: 6px;
             transition: border-color 0.2s;
         }
-        .coord-input:focus { border-color: #3498db; outline: none; }
+        .coord-input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); }
         
         button {
-            padding: 15px;
-            font-size: 18px;
+            padding: 18px;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             background-color: #27ae60;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 900;
             transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 0 #219653; /* Efeito de botão 3D de jogo */
         }
         button:hover { background-color: #2ecc71; }
-        button:active { transform: scale(0.98); }
+        button:active { 
+            transform: translateY(4px); 
+            box-shadow: 0 0 0 #219653; 
+        }
         
         #message {
-            font-weight: bold;
-            color: #e67e22;
+            font-weight: 900;
             min-height: 24px;
             text-align: center;
             margin-top: 10px;
-            font-size: 1.1em;
+            font-size: 1.3em;
+            text-transform: uppercase;
+            padding: 0;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            transform: scale(0.8);
         }
 
         /* Rodapé de Autoria */
@@ -171,21 +189,21 @@
         </div>
 
         <div class="controls">
-            <div class="current-turn" id="turn-display">Vez das <span style="color:#ff4757">Vermelhas</span></div>
+            <div class="current-turn" id="turn-display">VEZ DAS <br><span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span></div>
             
             <div class="input-group">
-                <div class="input-label">1. Coordenada da peça (Origem)</div>
+                <div class="input-label">1. Origem da Peça</div>
                 <div class="input-row">
-                    X: <input type="number" id="orig-x" class="coord-input" min="1" max="8" placeholder="1-8">
-                    Y: <input type="number" id="orig-y" class="coord-input" min="1" max="8" placeholder="1-8">
+                    X: <input type="number" id="orig-x" class="coord-input" min="0" max="7">
+                    Y: <input type="number" id="orig-y" class="coord-input" min="0" max="7">
                 </div>
             </div>
 
             <div class="input-group">
-                <div class="input-label">2. Coordenada do destino</div>
+                <div class="input-label">2. Destino</div>
                 <div class="input-row">
-                    X: <input type="number" id="dest-x" class="coord-input" min="1" max="8" placeholder="1-8">
-                    Y: <input type="number" id="dest-y" class="coord-input" min="1" max="8" placeholder="1-8">
+                    X: <input type="number" id="dest-x" class="coord-input" min="0" max="7">
+                    Y: <input type="number" id="dest-y" class="coord-input" min="0" max="7">
                 </div>
             </div>
 
@@ -197,18 +215,18 @@
     <footer>@experimentajoao | Soluções no Ensino de Matemática</footer>
 
     <script>
-        // Estado do jogo: 0=Vazio, 1=Vermelho, 2=Preto
         let boardState = [];
-        let currentPlayer = 1; // 1 = Vermelho, 2 = Preto
+        let currentPlayer = 1;
 
         function initBoard() {
             boardState = [];
-            for (let y = 8; y >= 1; y--) {
+            for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
                 let row = [];
-                for (let x = 1; x <= 8; x++) {
+                let y = 7 - rowIdx; 
+                for (let x = 0; x <= 7; x++) {
                     let isDarkSquare = (x + y) % 2 === 0;
-                    if (isDarkSquare && y <= 3) row.push(1);      
-                    else if (isDarkSquare && y >= 6) row.push(2); 
+                    if (isDarkSquare && y <= 2) row.push(1);
+                    else if (isDarkSquare && y >= 5) row.push(2);
                     else row.push(0);
                 }
                 boardState.push(row);
@@ -224,7 +242,7 @@
             yAxis.innerHTML = '';
             xAxis.innerHTML = '';
 
-            for (let x = 1; x <= 8; x++) {
+            for (let x = 0; x <= 7; x++) {
                 let xLabel = document.createElement('div');
                 xLabel.className = 'x-label';
                 xLabel.innerText = x;
@@ -232,7 +250,7 @@
             }
 
             for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
-                let yVal = 8 - rowIdx; 
+                let yVal = 7 - rowIdx; 
                 
                 let yLabel = document.createElement('div');
                 yLabel.className = 'y-label';
@@ -243,7 +261,7 @@
                 rowDiv.className = 'board-row';
                 
                 for (let colIdx = 0; colIdx < 8; colIdx++) {
-                    let xVal = colIdx + 1;
+                    let xVal = colIdx;
                     let square = document.createElement('div');
                     let isDark = (xVal + yVal) % 2 === 0;
                     
@@ -264,7 +282,25 @@
         function mostrarMensagem(msg, isError = true) {
             const msgDiv = document.getElementById('message');
             msgDiv.innerText = msg;
-            msgDiv.style.color = isError ? "#e74c3c" : "#27ae60";
+            
+            // Estilos dinâmicos de Gamificação
+            msgDiv.style.opacity = '1';
+            msgDiv.style.transform = 'scale(1)';
+            msgDiv.style.padding = '12px';
+            msgDiv.style.color = '#fff';
+            msgDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+
+            if (isError) {
+                msgDiv.style.backgroundColor = '#e74c3c'; // Fundo vermelho para erro
+            } else {
+                msgDiv.style.backgroundColor = '#2ecc71'; // Fundo verde para sucesso
+                
+                // Esconde a mensagem de sucesso depois de 3 segundos para limpar a tela
+                setTimeout(() => {
+                    msgDiv.style.opacity = '0';
+                    msgDiv.style.transform = 'scale(0.8)';
+                }, 3000);
+            }
         }
 
         function limparInputs() {
@@ -272,6 +308,8 @@
             document.getElementById('orig-y').value = '';
             document.getElementById('dest-x').value = '';
             document.getElementById('dest-y').value = '';
+            // Foca automaticamente no primeiro campo para agilizar a próxima jogada
+            document.getElementById('orig-x').focus();
         }
 
         function fazerJogada() {
@@ -281,36 +319,36 @@
             let dy = parseInt(document.getElementById('dest-y').value);
 
             if (isNaN(ox) || isNaN(oy) || isNaN(dx) || isNaN(dy)) {
-                mostrarMensagem("Por favor, preencha todas as coordenadas.");
+                mostrarMensagem("Preencha todas as coordenadas!");
                 return;
             }
 
-            if (ox<1 || ox>8 || oy<1 || oy>8 || dx<1 || dx>8 || dy<1 || dy>8) {
-                mostrarMensagem("Coordenadas fora do limite (use apenas 1 a 8).");
+            if (ox<0 || ox>7 || oy<0 || oy>7 || dx<0 || dx>7 || dy<0 || dy>7) {
+                mostrarMensagem("Fora do limite (Use 0 a 7)!");
                 return;
             }
 
-            let oCol = ox - 1;
-            let oRow = 8 - oy;
-            let dCol = dx - 1;
-            let dRow = 8 - dy;
+            let oCol = ox;
+            let oRow = 7 - oy;
+            let dCol = dx;
+            let dRow = 7 - dy;
 
             let piece = boardState[oRow][oCol];
             
             if (piece === 0) {
-                mostrarMensagem(`Não há peça em (${ox}, ${oy}).`);
+                mostrarMensagem("Casa de origem vazia!");
                 return;
             }
             if (piece !== currentPlayer) {
-                mostrarMensagem(`Turno errado. Vez das ${currentPlayer === 1 ? 'Vermelhas' : 'Pretas'}.`);
+                mostrarMensagem(`TURNO ERRADO! Vez das ${currentPlayer === 1 ? 'VERMELHAS' : 'PRETAS'}!`);
                 return;
             }
             if (boardState[dRow][dCol] !== 0) {
-                mostrarMensagem(`O destino (${dx}, ${dy}) está ocupado.`);
+                mostrarMensagem("Casa de destino ocupada!");
                 return;
             }
             if ((dx + dy) % 2 !== 0) {
-                mostrarMensagem("Movimento inválido: deve ser para uma casa escura.");
+                mostrarMensagem("Movimento inválido!");
                 return;
             }
 
@@ -335,18 +373,18 @@
                     boardState[oRow][oCol] = 0;
                     moveu = true;
                 } else {
-                    mostrarMensagem("Captura inválida: nenhum oponente para pular.");
+                    mostrarMensagem("Captura inválida!");
                 }
             } else {
-                mostrarMensagem("A peça só move na diagonal (frente ou captura).");
+                mostrarMensagem("Movimento não permitido!");
             }
 
             if (moveu) {
                 currentPlayer = currentPlayer === 1 ? 2 : 1;
-                let turnText = currentPlayer === 1 ? '<span style="color:#ff4757">Vermelhas</span>' : '<span style="color:#2f3542">Pretas</span>';
-                document.getElementById('turn-display').innerHTML = `Vez das ${turnText}`;
+                let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
+                document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
                 
-                mostrarMensagem("Jogada realizada!", false);
+                mostrarMensagem("JOGADA FEITA!", false);
                 limparInputs();
                 drawBoard();
             }
