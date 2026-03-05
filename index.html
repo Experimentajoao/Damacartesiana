@@ -41,136 +41,77 @@
         .dark { background-color: #a0522d; } 
         .light { background-color: #f5deb3; }
         
-        /* Peças Vista Superior */
+        /* Peças */
         .piece {
             width: 50px;
             height: 50px;
             border-radius: 50%;
             box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px; /* Tamanho da coroa */
         }
-        .red { 
-            background-color: #ff4757; 
-            border: 4px solid #b33939; 
-        }
-        .black { 
-            background-color: #2f3542; 
-            border: 4px solid #1e2229; 
-        }
+        .red { background-color: #ff4757; border: 4px solid #b33939; }
+        .black { background-color: #2f3542; border: 4px solid #1e2229; }
         
         /* Eixos Cartesianos */
         .y-axis { display: flex; flex-direction: column; width: 35px; }
         .y-label { 
-            height: 65px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: bold; 
-            font-size: 22px; 
-            color: #57606f;
+            height: 65px; display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; font-size: 22px; color: #57606f;
         }
         .x-axis { display: flex; padding-left: 35px; height: 35px; }
         .x-label { 
-            width: 65px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-weight: bold; 
-            font-size: 22px; 
-            color: #57606f;
+            width: 65px; display: flex; justify-content: center; align-items: center; 
+            font-weight: bold; font-size: 22px; color: #57606f;
         }
         
         /* Painel de Controles */
         .controls {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 340px; /* Levemente mais largo para acomodar textos maiores */
+            background-color: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex;
+            flex-direction: column; gap: 15px; width: 340px;
         }
 
-        /* Textos Gamificados */
         .current-turn { 
-            font-size: 32px; /* Fonte bem maior */
-            text-transform: uppercase; /* Tudo em maiúsculo */
-            letter-spacing: 1px;
-            text-align: center; 
-            margin-bottom: 10px; 
-            font-weight: 900;
-            border-bottom: 3px solid #eee;
-            padding-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-size: 32px; text-transform: uppercase; letter-spacing: 1px;
+            text-align: center; margin-bottom: 10px; font-weight: 900;
+            border-bottom: 3px solid #eee; padding-bottom: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
 
         .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
+            display: flex; flex-direction: column; gap: 8px;
+            background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef;
         }
         .input-label { font-weight: 700; color: #2c3e50; font-size: 1.1em; }
         .input-row { display: flex; gap: 10px; align-items: center; justify-content: center; font-weight: bold;}
         .coord-input {
-            width: 60px;
-            padding: 10px;
-            font-size: 22px;
-            font-weight: bold;
-            text-align: center;
-            border: 2px solid #ddd;
-            border-radius: 6px;
+            width: 60px; padding: 10px; font-size: 22px; font-weight: bold;
+            text-align: center; border: 2px solid #ddd; border-radius: 6px;
             transition: border-color 0.2s;
         }
         .coord-input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); }
         
         button {
-            padding: 18px;
-            font-size: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background-color: #27ae60;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 900;
-            transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 0 #219653; /* Efeito de botão 3D de jogo */
+            padding: 18px; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;
+            background-color: #27ae60; color: white; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 900; transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 0 #219653;
         }
         button:hover { background-color: #2ecc71; }
-        button:active { 
-            transform: translateY(4px); 
-            box-shadow: 0 0 0 #219653; 
-        }
+        button:active { transform: translateY(4px); box-shadow: 0 0 0 #219653; }
+        button:disabled { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; cursor: not-allowed; }
         
         #message {
-            font-weight: 900;
-            min-height: 24px;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 1.3em;
-            text-transform: uppercase;
-            padding: 0;
-            border-radius: 8px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0;
-            transform: scale(0.8);
+            font-weight: 900; min-height: 24px; text-align: center; margin-top: 10px;
+            font-size: 1.3em; text-transform: uppercase; padding: 0; border-radius: 8px;
+            transition: all 0.3s; opacity: 0; transform: scale(0.8);
         }
 
-        /* Rodapé de Autoria */
         footer {
-            margin-top: 40px;
-            padding: 20px 0;
-            width: 100%;
-            text-align: center;
-            font-weight: 600;
-            color: #7f8c8d;
-            font-size: 16px;
-            letter-spacing: 0.5px;
+            margin-top: 40px; padding: 20px 0; width: 100%; text-align: center;
+            font-weight: 600; color: #7f8c8d; font-size: 16px;
         }
     </style>
 </head>
@@ -207,7 +148,7 @@
                 </div>
             </div>
 
-            <button onclick="fazerJogada()">Enviar Jogada</button>
+            <button onclick="fazerJogada()" id="btn-jogar">Enviar Jogada</button>
             <div id="message"></div>
         </div>
     </div>
@@ -216,7 +157,15 @@
 
     <script>
         let boardState = [];
-        let currentPlayer = 1;
+        let currentPlayer = 1; // 1 = Vermelhas, 2 = Pretas
+        let turnState = 'normal'; // Pode ser 'normal' ou 'multi_jump'
+        let activePiece = null; // Guarda a coordenada da peça que deve continuar comendo
+
+        // Identificadores das peças: 1 (Vermelha), 2 (Preta), 3 (Dama Vermelha), 4 (Dama Preta)
+        const isRed = (p) => p === 1 || p === 3;
+        const isBlack = (p) => p === 2 || p === 4;
+        const isDama = (p) => p === 3 || p === 4;
+        const getPlayer = (p) => isRed(p) ? 1 : isBlack(p) ? 2 : 0;
 
         function initBoard() {
             boardState = [];
@@ -238,19 +187,28 @@
             const yAxis = document.getElementById('y-axis');
             const xAxis = document.getElementById('x-axis');
             
-            board.innerHTML = '';
-            yAxis.innerHTML = '';
-            xAxis.innerHTML = '';
+            board.innerHTML = ''; yAxis.innerHTML = ''; xAxis.innerHTML = '';
 
-            for (let x = 0; x <= 7; x++) {
+            // Lógica de Rotação Baseada no Turno
+            let yStart = currentPlayer === 1 ? 7 : 0;
+            let yEnd = currentPlayer === 1 ? -1 : 8;
+            let yStep = currentPlayer === 1 ? -1 : 1;
+
+            let xStart = currentPlayer === 1 ? 0 : 7;
+            let xEnd = currentPlayer === 1 ? 8 : -1;
+            let xStep = currentPlayer === 1 ? 1 : -1;
+
+            // Renderiza eixo X invertido ou normal
+            for (let x = xStart; x !== xEnd; x += xStep) {
                 let xLabel = document.createElement('div');
                 xLabel.className = 'x-label';
                 xLabel.innerText = x;
                 xAxis.appendChild(xLabel);
             }
 
-            for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
-                let yVal = 7 - rowIdx; 
+            // Renderiza Tabuleiro e Eixo Y invertidos ou normais
+            for (let yVal = yStart; yVal !== yEnd; yVal += yStep) {
+                let rowIdx = 7 - yVal; 
                 
                 let yLabel = document.createElement('div');
                 yLabel.className = 'y-label';
@@ -260,8 +218,8 @@
                 let rowDiv = document.createElement('div');
                 rowDiv.className = 'board-row';
                 
-                for (let colIdx = 0; colIdx < 8; colIdx++) {
-                    let xVal = colIdx;
+                for (let xVal = xStart; xVal !== xEnd; xVal += xStep) {
+                    let colIdx = xVal;
                     let square = document.createElement('div');
                     let isDark = (xVal + yVal) % 2 === 0;
                     
@@ -270,7 +228,8 @@
                     let pieceVal = boardState[rowIdx][colIdx];
                     if (pieceVal !== 0) {
                         let piece = document.createElement('div');
-                        piece.className = 'piece ' + (pieceVal === 1 ? 'red' : 'black');
+                        piece.className = 'piece ' + (isRed(pieceVal) ? 'red' : 'black');
+                        if (isDama(pieceVal)) piece.innerText = '👑';
                         square.appendChild(piece);
                     }
                     rowDiv.appendChild(square);
@@ -279,23 +238,17 @@
             }
         }
 
-        function mostrarMensagem(msg, isError = true) {
+        function mostrarMensagem(msg, isError = true, persistent = false) {
             const msgDiv = document.getElementById('message');
             msgDiv.innerText = msg;
-            
-            // Estilos dinâmicos de Gamificação
             msgDiv.style.opacity = '1';
             msgDiv.style.transform = 'scale(1)';
             msgDiv.style.padding = '12px';
             msgDiv.style.color = '#fff';
             msgDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+            msgDiv.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
 
-            if (isError) {
-                msgDiv.style.backgroundColor = '#e74c3c'; // Fundo vermelho para erro
-            } else {
-                msgDiv.style.backgroundColor = '#2ecc71'; // Fundo verde para sucesso
-                
-                // Esconde a mensagem de sucesso depois de 3 segundos para limpar a tela
+            if (!isError && !persistent) {
                 setTimeout(() => {
                     msgDiv.style.opacity = '0';
                     msgDiv.style.transform = 'scale(0.8)';
@@ -304,12 +257,76 @@
         }
 
         function limparInputs() {
-            document.getElementById('orig-x').value = '';
-            document.getElementById('orig-y').value = '';
-            document.getElementById('dest-x').value = '';
-            document.getElementById('dest-y').value = '';
-            // Foca automaticamente no primeiro campo para agilizar a próxima jogada
+            document.getElementById('orig-x').value = ''; document.getElementById('orig-y').value = '';
+            document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = '';
             document.getElementById('orig-x').focus();
+        }
+
+        function getPathPieces(ox, oy, dx, dy) {
+            let pieces = [];
+            let steps = Math.abs(dx - ox);
+            let dirX = (dx - ox) > 0 ? 1 : -1;
+            let dirY = (dy - oy) > 0 ? 1 : -1;
+            
+            for (let i = 1; i < steps; i++) {
+                let checkX = ox + (i * dirX);
+                let checkY = oy + (i * dirY);
+                let r = 7 - checkY, c = checkX;
+                if (boardState[r][c] !== 0) {
+                    pieces.push({x: checkX, y: checkY, val: boardState[r][c], r: r, c: c});
+                }
+            }
+            return pieces;
+        }
+
+        function hasAvailableCaptures(startX, startY) {
+            let r = 7 - startY, c = startX;
+            let piece = boardState[r][c];
+            let pOwner = getPlayer(piece);
+            let dirs = [[1,1], [1,-1], [-1,1], [-1,-1]];
+            
+            for (let d of dirs) {
+                if (isDama(piece)) {
+                    let step = 1, foundEnemy = false;
+                    while(true) {
+                        let tx = startX + d[0]*step, ty = startY + d[1]*step;
+                        if (tx < 0 || tx > 7 || ty < 0 || ty > 7) break;
+                        let tPiece = boardState[7 - ty][tx];
+                        if (tPiece !== 0) {
+                            if (getPlayer(tPiece) === pOwner) break; 
+                            if (getPlayer(tPiece) !== pOwner) {
+                                if (foundEnemy) break; 
+                                foundEnemy = true;
+                            }
+                        } else if (foundEnemy) {
+                            return true; // Há uma casa vazia após o inimigo
+                        }
+                        step++;
+                    }
+                } else {
+                    let tx = startX + d[0]*2, ty = startY + d[1]*2;
+                    let mx = startX + d[0], my = startY + d[1];
+                    if (tx >= 0 && tx <= 7 && ty >= 0 && ty <= 7) {
+                        if (boardState[7 - ty][tx] === 0 && boardState[7 - my][mx] !== 0 && getPlayer(boardState[7 - my][mx]) !== pOwner) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function checkWin() {
+            let redCount = 0, blackCount = 0;
+            for(let r=0; r<8; r++) {
+                for(let c=0; c<8; c++) {
+                    if(isRed(boardState[r][c])) redCount++;
+                    if(isBlack(boardState[r][c])) blackCount++;
+                }
+            }
+            if (redCount === 0) return 2;
+            if (blackCount === 0) return 1;
+            return 0;
         }
 
         function fazerJogada() {
@@ -318,75 +335,93 @@
             let dx = parseInt(document.getElementById('dest-x').value);
             let dy = parseInt(document.getElementById('dest-y').value);
 
-            if (isNaN(ox) || isNaN(oy) || isNaN(dx) || isNaN(dy)) {
-                mostrarMensagem("Preencha todas as coordenadas!");
-                return;
+            if (isNaN(ox) || isNaN(oy) || isNaN(dx) || isNaN(dy)) return mostrarMensagem("Preencha todas as coordenadas!");
+            if (ox<0 || ox>7 || oy<0 || oy>7 || dx<0 || dx>7 || dy<0 || dy>7) return mostrarMensagem("Fora do limite (Use 0 a 7)!");
+
+            if (turnState === 'multi_jump') {
+                if (ox !== activePiece.x || oy !== activePiece.y) {
+                    return mostrarMensagem(`Capture com a peça em (${activePiece.x}, ${activePiece.y})!`);
+                }
             }
 
-            if (ox<0 || ox>7 || oy<0 || oy>7 || dx<0 || dx>7 || dy<0 || dy>7) {
-                mostrarMensagem("Fora do limite (Use 0 a 7)!");
-                return;
-            }
-
-            let oCol = ox;
-            let oRow = 7 - oy;
-            let dCol = dx;
-            let dRow = 7 - dy;
-
+            let oCol = ox, oRow = 7 - oy;
+            let dCol = dx, dRow = 7 - dy;
             let piece = boardState[oRow][oCol];
+            let pOwner = getPlayer(piece);
             
-            if (piece === 0) {
-                mostrarMensagem("Casa de origem vazia!");
-                return;
-            }
-            if (piece !== currentPlayer) {
-                mostrarMensagem(`TURNO ERRADO! Vez das ${currentPlayer === 1 ? 'VERMELHAS' : 'PRETAS'}!`);
-                return;
-            }
-            if (boardState[dRow][dCol] !== 0) {
-                mostrarMensagem("Casa de destino ocupada!");
-                return;
-            }
-            if ((dx + dy) % 2 !== 0) {
-                mostrarMensagem("Movimento inválido!");
-                return;
-            }
+            if (piece === 0) return mostrarMensagem("Casa de origem vazia!");
+            if (pOwner !== currentPlayer) return mostrarMensagem(`Vez das ${currentPlayer === 1 ? 'VERMELHAS' : 'PRETAS'}!`);
+            if (boardState[dRow][dCol] !== 0) return mostrarMensagem("Casa de destino ocupada!");
+            if (Math.abs(dx - ox) !== Math.abs(dy - oy)) return mostrarMensagem("Movimento deve ser na diagonal!");
 
-            let diffX = dx - ox;
-            let diffY = dy - oy;
-            let direcaoY = (piece === 1) ? 1 : -1; 
-            let moveu = false;
+            let diffX = dx - ox, diffY = dy - oy;
+            let moveu = false, capturou = false;
 
-            if (Math.abs(diffX) === 1 && diffY === direcaoY) {
-                boardState[dRow][dCol] = piece;
-                boardState[oRow][oCol] = 0;
-                moveu = true;
-            } 
-            else if (Math.abs(diffX) === 2 && Math.abs(diffY) === 2) {
-                let meioCol = oCol + (diffX / 2);
-                let meioRow = oRow - (diffY / 2); 
-                let pecaCapturada = boardState[meioRow][meioCol];
-
-                if (pecaCapturada !== 0 && pecaCapturada !== piece) {
-                    boardState[meioRow][meioCol] = 0; 
-                    boardState[dRow][dCol] = piece; 
-                    boardState[oRow][oCol] = 0;
-                    moveu = true;
+            if (isDama(piece)) {
+                let pathPieces = getPathPieces(ox, oy, dx, dy);
+                if (pathPieces.length === 0) {
+                    if (turnState === 'multi_jump') return mostrarMensagem("Você é obrigado a capturar!");
+                    boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true;
+                } else if (pathPieces.length === 1) {
+                    if (getPlayer(pathPieces[0].val) === pOwner) return mostrarMensagem("Não pode capturar a própria peça!");
+                    boardState[pathPieces[0].r][pathPieces[0].c] = 0; // Remove capturada
+                    boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0;
+                    moveu = true; capturou = true;
                 } else {
-                    mostrarMensagem("Captura inválida!");
+                    return mostrarMensagem("Movimento inválido! Muitas peças no caminho.");
                 }
             } else {
-                mostrarMensagem("Movimento não permitido!");
+                let direcaoY = (pOwner === 1) ? 1 : -1; 
+                if (Math.abs(diffX) === 1 && diffY === direcaoY) {
+                    if (turnState === 'multi_jump') return mostrarMensagem("Você é obrigado a capturar!");
+                    boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true;
+                } 
+                else if (Math.abs(diffX) === 2 && Math.abs(diffY) === 2) {
+                    let meioCol = oCol + (diffX / 2), meioRow = oRow - (diffY / 2); 
+                    let pecaCapturada = boardState[meioRow][meioCol];
+                    if (pecaCapturada !== 0 && getPlayer(pecaCapturada) !== pOwner) {
+                        boardState[meioRow][meioCol] = 0; boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0;
+                        moveu = true; capturou = true;
+                    } else {
+                        return mostrarMensagem("Captura inválida!");
+                    }
+                } else {
+                    return mostrarMensagem("Movimento não permitido!");
+                }
             }
 
             if (moveu) {
-                currentPlayer = currentPlayer === 1 ? 2 : 1;
-                let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
-                document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
-                
-                mostrarMensagem("JOGADA FEITA!", false);
-                limparInputs();
+                let promoted = false;
+                if (!isDama(piece)) {
+                    if (pOwner === 1 && dy === 7) { boardState[dRow][dCol] = 3; promoted = true; }
+                    if (pOwner === 2 && dy === 0) { boardState[dRow][dCol] = 4; promoted = true; }
+                }
+
+                if (capturou && !promoted && hasAvailableCaptures(dx, dy)) {
+                    turnState = 'multi_jump';
+                    activePiece = {x: dx, y: dy};
+                    mostrarMensagem(`Continue capturando com a peça em (${dx}, ${dy})!`, false, true);
+                    document.getElementById('orig-x').value = dx; document.getElementById('orig-y').value = dy;
+                    document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = '';
+                    document.getElementById('dest-x').focus();
+                } else {
+                    turnState = 'normal'; activePiece = null;
+                    currentPlayer = currentPlayer === 1 ? 2 : 1;
+                    let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
+                    document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
+                    mostrarMensagem("JOGADA FEITA!", false);
+                    limparInputs();
+                }
+
                 drawBoard();
+
+                let winner = checkWin();
+                if (winner !== 0) {
+                    let winColor = winner === 1 ? 'VERMELHAS' : 'PRETAS';
+                    document.getElementById('turn-display').innerHTML = `🏆 VITÓRIA DAS <br><span style="color:${winner===1?'#ff4757':'#2f3542'};">${winColor}</span> 🏆`;
+                    document.getElementById('btn-jogar').disabled = true;
+                    mostrarMensagem(`FIM DE JOGO! As ${winColor} venceram!`, false, true);
+                }
             }
         }
 
