@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
+<html lang="pt-BR"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Damas no Plano Cartesiano</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,45 +15,56 @@
             padding: 20px;
             min-height: 100vh;
         }
-        h1 { margin-bottom: 5px; color: #2c3e50; }
-        .sub-header { margin-bottom: 20px; color: #7f8c8d; font-size: 1.1em; }
-        
+        h1 { margin-bottom: 5px; color: #2c3e50; text-align: center; }
+        .sub-header { margin-bottom: 20px; color: #7f8c8d; font-size: 1.1em; text-align: center; }
+         
         .game-container {
             display: flex;
             gap: 40px;
             align-items: flex-start;
             flex: 1;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        
-        .board-wrapper {
-            display: flex;
-            flex-direction: column;
-        }
+         
+        .board-wrapper { display: flex; flex-direction: column; }
         .board-row { display: flex; }
         .square {
-            width: 65px;
-            height: 65px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 65px; height: 65px; display: flex;
+            justify-content: center; align-items: center;
+            transition: opacity 0.2s, transform 0.1s;
         }
         .dark { background-color: #a0522d; } 
         .light { background-color: #f5deb3; }
         
+        /* Modificador para a Prova (Clicável) */
+        .square.clickable:hover {
+            opacity: 0.7; cursor: crosshair;
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+         
         /* Peças */
         .piece {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 26px; /* Tamanho da coroa */
+            width: 50px; height: 50px; border-radius: 50%;
+            box-sizing: border-box; display: flex;
+            justify-content: center; align-items: center; font-size: 26px;
+            transition: all 0.3s;
         }
         .red { background-color: #ff4757; border: 4px solid #b33939; }
         .black { background-color: #2f3542; border: 4px solid #1e2229; }
         
+        /* Destaque para a Peça na Prova */
+        @keyframes piscar {
+            0% { box-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f; transform: scale(1); }
+            50% { box-shadow: 0 0 20px #f1c40f, 0 0 30px #f1c40f; transform: scale(1.1); }
+            100% { box-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f; transform: scale(1); }
+        }
+        .piece-highlight {
+            animation: piscar 1.5s infinite;
+            border-color: #f1c40f;
+            z-index: 10;
+        }
+         
         /* Eixos Cartesianos */
         .y-axis { display: flex; flex-direction: column; width: 35px; }
         .y-label { 
@@ -66,25 +76,39 @@
             width: 65px; display: flex; justify-content: center; align-items: center; 
             font-weight: bold; font-size: 22px; color: #57606f;
         }
-        
-        /* Painel de Controles */
-        .controls {
+         
+        /* Painel de Controles Base */
+        .panel {
             background-color: white; padding: 25px; border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex;
-            flex-direction: column; gap: 15px; width: 340px;
+            flex-direction: column; gap: 15px; width: 340px; box-sizing: border-box;
         }
-
+ 
         .current-turn { 
             font-size: 32px; text-transform: uppercase; letter-spacing: 1px;
-            text-align: center; margin-bottom: 10px; font-weight: 900;
+            text-align: center; margin-bottom: 5px; font-weight: 900;
             border-bottom: 3px solid #eee; padding-bottom: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-
+ 
+        .top-buttons { display: flex; gap: 10px; justify-content: space-between; }
+        .btn-small {
+            padding: 10px; font-size: 14px; text-transform: uppercase; font-weight: bold;
+            border-radius: 6px; border: none; cursor: pointer; color: white; flex: 1;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .btn-regras { background-color: #3498db; box-shadow: 0 3px 0 #2980b9; }
+        .btn-regras:hover { background-color: #2980b9; }
+        .btn-regras:active { transform: translateY(3px); box-shadow: 0 0 0 #2980b9; }
+         
+        .btn-reiniciar { background-color: #f39c12; box-shadow: 0 3px 0 #d35400; }
+        .btn-reiniciar:hover { background-color: #d35400; }
+        .btn-reiniciar:active { transform: translateY(3px); box-shadow: 0 0 0 #d35400; }
+ 
         .input-group {
             display: flex; flex-direction: column; gap: 8px;
             background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef;
         }
-        .input-label { font-weight: 700; color: #2c3e50; font-size: 1.1em; }
+        .input-label { font-weight: 700; color: #2c3e50; font-size: 1.1em; text-align: center;}
         .input-row { display: flex; gap: 10px; align-items: center; justify-content: center; font-weight: bold;}
         .coord-input {
             width: 60px; padding: 10px; font-size: 22px; font-weight: bold;
@@ -92,34 +116,79 @@
             transition: border-color 0.2s;
         }
         .coord-input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 8px rgba(52, 152, 219, 0.3); }
-        
-        button {
+         
+        .btn-jogar {
             padding: 18px; font-size: 20px; text-transform: uppercase; letter-spacing: 1px;
             background-color: #27ae60; color: white; border: none; border-radius: 8px;
             cursor: pointer; font-weight: 900; transition: background-color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 0 #219653;
+            box-shadow: 0 4px 0 #219653; width: 100%; box-sizing: border-box;
         }
-        button:hover { background-color: #2ecc71; }
-        button:active { transform: translateY(4px); box-shadow: 0 0 0 #219653; }
-        button:disabled { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; cursor: not-allowed; }
-        
+        .btn-jogar:hover { background-color: #2ecc71; }
+        .btn-jogar:active { transform: translateY(4px); box-shadow: 0 0 0 #219653; }
+        .btn-jogar:disabled { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; cursor: not-allowed; }
+
+        .btn-prova { background-color: #8e44ad; box-shadow: 0 4px 0 #732d91; margin-top: 10px; }
+        .btn-prova:hover { background-color: #9b59b6; }
+        .btn-prova:active { transform: translateY(4px); box-shadow: 0 0 0 #732d91; }
+         
         #message {
             font-weight: 900; min-height: 24px; text-align: center; margin-top: 10px;
-            font-size: 1.3em; text-transform: uppercase; padding: 0; border-radius: 8px;
+            font-size: 1.2em; text-transform: uppercase; padding: 0; border-radius: 8px;
             transition: all 0.3s; opacity: 0; transform: scale(0.8);
         }
 
+        /* Modal Padrão */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-content {
+            background: #fff; padding: 30px; border-radius: 12px; width: 90%; max-width: 500px;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+        .modal-content h2 { color: #2c3e50; margin-top: 0; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px;}
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; font-size: 28px;
+            font-weight: bold; color: #95a5a6; cursor: pointer; transition: color 0.2s;
+        }
+        .close-btn:hover { color: #e74c3c; }
+
+        /* Estilos do Certificado */
+        .certificado {
+            border: 12px solid #2c3e50; padding: 40px 30px; text-align: center;
+            background: #fffdf2; position: relative; font-family: 'Times New Roman', Times, serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto;
+        }
+        .certificado::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px solid #bdc3c7; pointer-events: none;
+        }
+        .cert-title { font-size: 32px; color: #8e44ad; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;}
+        .cert-subtitle { font-size: 18px; color: #7f8c8d; font-style: italic; margin-bottom: 30px; }
+        .cert-name { font-size: 36px; color: #2c3e50; font-weight: bold; border-bottom: 2px solid #34495e; display: inline-block; padding: 0 20px 5px 20px; margin-bottom: 20px;}
+        .cert-text { font-size: 20px; color: #333; line-height: 1.5; }
+        .cert-score { font-weight: bold; color: #27ae60; font-size: 24px;}
+        .cert-footer { margin-top: 40px; font-size: 16px; color: #95a5a6; font-style: italic; border-top: 1px solid #eee; padding-top: 15px;}
+ 
         footer {
             margin-top: 40px; padding: 20px 0; width: 100%; text-align: center;
             font-weight: 600; color: #7f8c8d; font-size: 16px;
         }
+
+        /* Inputs de formulário gerais */
+        .form-input {
+            width: 100%; padding: 12px; font-size: 18px; border: 2px solid #ddd;
+            border-radius: 6px; box-sizing: border-box; margin-bottom: 20px; text-align: center;
+        }
     </style>
 </head>
 <body>
-
+ 
     <h1>Damas no Plano Cartesiano</h1>
-    <div class="sub-header">Utilize as coordenadas (X, Y) para mover as peças.</div>
-
+    <div class="sub-header" id="main-subtitle">Utilize as coordenadas (X, Y) para mover as peças.</div>
+ 
     <div class="game-container">
         <div style="display: flex; flex-direction: column;">
             <div style="display: flex;">
@@ -128,45 +197,290 @@
             </div>
             <div class="x-axis" id="x-axis"></div>
         </div>
-
-        <div class="controls">
-            <div class="current-turn" id="turn-display">VEZ DAS <br><span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span></div>
-            
-            <div class="input-group">
-                <div class="input-label">1. Origem da Peça</div>
-                <div class="input-row">
-                    X: <input type="number" id="orig-x" class="coord-input" min="0" max="7">
-                    Y: <input type="number" id="orig-y" class="coord-input" min="0" max="7">
+ 
+        <div>
+            <div class="panel" id="panel-game">
+                <div class="top-buttons">
+                    <button class="btn-small btn-regras" onclick="abrirModal('modal-regras')">📖 Regras</button>
+                    <button class="btn-small btn-reiniciar" onclick="reiniciarPartida()">🔄 Reiniciar</button>
                 </div>
+     
+                <div class="current-turn" id="turn-display">VEZ DAS <br><span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span></div>
+                 
+                <div class="input-group">
+                    <div class="input-label">1. Origem da Peça</div>
+                    <div class="input-row">
+                        X: <input type="number" id="orig-x" class="coord-input" min="0" max="7">
+                        Y: <input type="number" id="orig-y" class="coord-input" min="0" max="7">
+                    </div>
+                </div>
+     
+                <div class="input-group">
+                    <div class="input-label">2. Destino</div>
+                    <div class="input-row">
+                        X: <input type="number" id="dest-x" class="coord-input" min="0" max="7">
+                        Y: <input type="number" id="dest-y" class="coord-input" min="0" max="7">
+                    </div>
+                </div>
+     
+                <button class="btn-jogar" onclick="fazerJogada()" id="btn-jogar">Enviar Jogada</button>
+                
+                <hr style="width: 100%; border: 1px solid #eee; margin: 10px 0;">
+                <button class="btn-jogar btn-prova" onclick="abrirModal('modal-identificacao')">📝 Iniciar Prova</button>
+                
+                <div id="message"></div>
             </div>
 
-            <div class="input-group">
-                <div class="input-label">2. Destino</div>
-                <div class="input-row">
-                    X: <input type="number" id="dest-x" class="coord-input" min="0" max="7">
-                    Y: <input type="number" id="dest-y" class="coord-input" min="0" max="7">
+            <div class="panel" id="panel-exam" style="display: none; border: 3px solid #8e44ad;">
+                <div class="current-turn" style="color: #8e44ad; font-size: 26px;">MODO PROVA</div>
+                
+                <div class="input-group" style="background: #fdf5ff; border-color: #e8daef;">
+                    <div class="input-label" id="exam-question-text" style="font-size: 1.3em; color: #8e44ad;">
+                        Questão 1/10:<br>Qual a coordenada da peça em destaque?
+                    </div>
                 </div>
-            </div>
 
-            <button onclick="fazerJogada()" id="btn-jogar">Enviar Jogada</button>
-            <div id="message"></div>
+                <div class="input-group" id="exam-input-area">
+                    <div class="input-label">Digite a Coordenada:</div>
+                    <div class="input-row">
+                        X: <input type="number" id="exam-x" class="coord-input" min="0" max="7">
+                        Y: <input type="number" id="exam-y" class="coord-input" min="0" max="7">
+                    </div>
+                </div>
+
+                <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91;" onclick="responderProvaTipoA()" id="btn-responder-prova">Responder</button>
+                <button class="btn-small btn-reiniciar" style="margin-top: 10px; width: 100%;" onclick="encerrarProva()">Sair da Prova</button>
+            </div>
         </div>
     </div>
 
-    <footer>@experimentajoao | Soluções no Ensino de Matemática</footer>
+    <div class="modal-overlay" id="modal-regras" onclick="fecharModalFora(event, 'modal-regras')">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModal('modal-regras')">×</span>
+            <h2>📖 Regras do Jogo</h2>
+            <ul>
+                <li><strong>Objetivo:</strong> Capturar todas as peças usando coordenadas.</li>
+                <li><strong>Movimento:</strong> 1 casa na diagonal para frente.</li>
+                <li><strong>Captura:</strong> Pule sobre a peça inimiga. Capturas em sequência são obrigatórias!</li>
+                <li><strong>Damas (👑):</strong> Andam livremente nas diagonais (frente e trás).</li>
+            </ul>
+        </div>
+    </div>
 
+    <div class="modal-overlay" id="modal-identificacao" onclick="fecharModalFora(event, 'modal-identificacao')">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModal('modal-identificacao')">×</span>
+            <h2 style="color: #8e44ad;">📝 Iniciar Prova</h2>
+            <p style="text-align: center; color: #555;">Digite seu nome completo para que saia no certificado em caso de aprovação (mínimo de 70% de acertos).</p>
+            <input type="text" id="aluno-nome" class="form-input" placeholder="Seu nome completo">
+            <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91; width: 100%;" onclick="iniciarProva()">Começar Prova</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-certificado">
+        <div style="background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 650px; display: flex; flex-direction: column; align-items: center;">
+            
+            <div class="certificado" id="certificado-conteudo" style="width: 100%; box-sizing: border-box;">
+                <div class="cert-title">Certificado de Excelência</div>
+                <div class="cert-subtitle">Matemática - Plano Cartesiano</div>
+                <div class="cert-text">Certificamos que o(a) aluno(a)</div>
+                <div class="cert-name" id="cert-nome-aluno">[Nome]</div>
+                <div class="cert-text">
+                    concluiu a Prova Prática de Coordenadas com aproveitamento de <br>
+                    <span class="cert-score" id="cert-nota">100% (10/10)</span>.
+                </div>
+                <div class="cert-footer">Emitido pelo sistema interativo de ensino experimentajoao.</div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%;">
+                <button class="btn-jogar" style="flex: 1; background-color: #3498db; box-shadow: 0 4px 0 #2980b9;" onclick="baixarCertificadoPDF()">📥 Baixar PDF</button>
+                <button class="btn-jogar" style="flex: 1;" onclick="encerrarProva()">Voltar ao Jogo</button>
+            </div>
+
+        </div>
+    </div>
+ 
+    <footer>@experimentajoao | Soluções no Ensino de Matemática</footer>
+ 
     <script>
+        /* ================= ESTADO DO JOGO ================= */
         let boardState = [];
         let currentPlayer = 1; // 1 = Vermelhas, 2 = Pretas
-        let turnState = 'normal'; // Pode ser 'normal' ou 'multi_jump'
-        let activePiece = null; // Guarda a coordenada da peça que deve continuar comendo
-
-        // Identificadores das peças: 1 (Vermelha), 2 (Preta), 3 (Dama Vermelha), 4 (Dama Preta)
+        let turnState = 'normal'; 
+        let activePiece = null; 
+ 
         const isRed = (p) => p === 1 || p === 3;
         const isBlack = (p) => p === 2 || p === 4;
         const isDama = (p) => p === 3 || p === 4;
         const getPlayer = (p) => isRed(p) ? 1 : isBlack(p) ? 2 : 0;
 
+        /* ================= ESTADO DA PROVA ================= */
+        let isExamMode = false;
+        let examScore = 0;
+        let currentQuestionIdx = 0;
+        let studentName = "";
+        
+        // Array de 10 Questões (Misto de Localizar e Clicar)
+        const examQuestions = [
+            { type: 'A', x: 2, y: 5, text: "Qual a coordenada (X, Y) da peça piscando no tabuleiro?" },
+            { type: 'B', x: 5, y: 3, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (5, 3)." },
+            { type: 'A', x: 7, y: 0, text: "Localize a peça destacada e insira suas coordenadas abaixo." },
+            { type: 'B', x: 0, y: 6, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (0, 6)." },
+            { type: 'A', x: 3, y: 4, text: "Qual a coordenada da peça piscando?" },
+            { type: 'B', x: 4, y: 1, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (4, 1)." },
+            { type: 'A', x: 6, y: 7, text: "Onde está a peça? Insira X e Y." },
+            { type: 'B', x: 1, y: 2, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (1, 2)." },
+            { type: 'A', x: 4, y: 5, text: "Localize a coordenada exata da peça." },
+            { type: 'B', x: 7, y: 4, text: "Para finalizar, CLIQUE na casa de coordenada (7, 4)." }
+        ];
+
+        /* ================= CONTROLE DE MODAIS ================= */
+        function abrirModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                const content = modal.querySelector('.modal-content') || modal.querySelector('.certificado') || modal.firstElementChild;
+                if(content) content.style.transform = 'scale(1)';
+            }, 10);
+        }
+ 
+        function fecharModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.opacity = '0';
+            const content = modal.querySelector('.modal-content') || modal.querySelector('.certificado') || modal.firstElementChild;
+            if(content) content.style.transform = 'scale(0.8)';
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function fecharModalFora(event, id) {
+            if (event.target === document.getElementById(id)) fecharModal(id);
+        }
+
+        function mostrarMensagem(msg, isError = true, persistent = false) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.innerText = msg;
+            msgDiv.style.opacity = '1'; msgDiv.style.transform = 'scale(1)';
+            msgDiv.style.padding = '12px'; msgDiv.style.color = '#fff';
+            msgDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+            msgDiv.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
+ 
+            if (!isError && !persistent) {
+                setTimeout(() => { msgDiv.style.opacity = '0'; msgDiv.style.transform = 'scale(0.8)'; }, 3000);
+            }
+        }
+
+        /* ================= LÓGICA DA PROVA ================= */
+        function iniciarProva() {
+            const nomeInput = document.getElementById('aluno-nome').value.trim();
+            if(!nomeInput) {
+                alert("Por favor, digite seu nome para iniciar a prova.");
+                return;
+            }
+            studentName = nomeInput;
+            isExamMode = true;
+            examScore = 0;
+            currentQuestionIdx = 0;
+            currentPlayer = 1; // Na prova, a visão é sempre travada na perspectiva normal.
+            
+            fecharModal('modal-identificacao');
+            document.getElementById('panel-game').style.display = 'none';
+            document.getElementById('panel-exam').style.display = 'flex';
+            document.getElementById('main-subtitle').innerText = "Modo Prova Ativo: Concentre-se nas coordenadas!";
+            
+            carregarQuestaoProva();
+        }
+
+        function carregarQuestaoProva() {
+            if (currentQuestionIdx >= examQuestions.length) {
+                finalizarProva();
+                return;
+            }
+
+            const q = examQuestions[currentQuestionIdx];
+            document.getElementById('exam-question-text').innerHTML = `<strong>Questão ${currentQuestionIdx + 1}/10:</strong><br>${q.text}`;
+
+            // Limpa inputs
+            document.getElementById('exam-x').value = '';
+            document.getElementById('exam-y').value = '';
+
+            // Configura visibilidade do input dependendo do tipo da questão
+            if (q.type === 'A') {
+                document.getElementById('exam-input-area').style.display = 'flex';
+                document.getElementById('btn-responder-prova').style.display = 'block';
+                document.getElementById('exam-x').focus();
+            } else {
+                // Tipo B: Espera clique no tabuleiro
+                document.getElementById('exam-input-area').style.display = 'none';
+                document.getElementById('btn-responder-prova').style.display = 'none';
+            }
+
+            drawBoard(); // O drawBoard se encarregará de desenhar o tabuleiro de prova baseado no isExamMode
+        }
+
+        function responderProvaTipoA() {
+            const x = parseInt(document.getElementById('exam-x').value);
+            const y = parseInt(document.getElementById('exam-y').value);
+            
+            if (isNaN(x) || isNaN(y)) {
+                alert("Preencha X e Y para responder."); return;
+            }
+
+            const q = examQuestions[currentQuestionIdx];
+            if (x === q.x && y === q.y) {
+                examScore++;
+                mostrarMensagem("Correto!", false);
+            } else {
+                mostrarMensagem("Incorreto!", true);
+            }
+
+            currentQuestionIdx++;
+            setTimeout(carregarQuestaoProva, 1000); // 1 segundo de pausa para ver a mensagem
+        }
+
+        function examSquareClick(x, y) {
+            if (!isExamMode) return;
+            const q = examQuestions[currentQuestionIdx];
+            if (q.type !== 'B') return; // Só faz algo se for do tipo B
+
+            if (x === q.x && y === q.y) {
+                examScore++;
+                mostrarMensagem("Correto! Clicou no lugar exato.", false);
+            } else {
+                mostrarMensagem(`Errou! A coordenada correta era (${q.x}, ${q.y}).`, true);
+            }
+
+            currentQuestionIdx++;
+            setTimeout(carregarQuestaoProva, 1500);
+        }
+
+        function finalizarProva() {
+            const percentage = (examScore / examQuestions.length) * 100;
+            
+            if (percentage >= 70) {
+                // Aprovado: Mostra o certificado
+                document.getElementById('cert-nome-aluno').innerText = studentName;
+                document.getElementById('cert-nota').innerText = `${percentage}% (${examScore}/10)`;
+                abrirModal('modal-certificado');
+            } else {
+                // Reprovado: Mensagem simples
+                alert(`Prova Finalizada, ${studentName}.\nSua nota foi ${examScore}/10 (${percentage}%).\nVocê precisa de 70% ou mais para o certificado. Tente novamente!`);
+                encerrarProva();
+            }
+        }
+
+        function encerrarProva() {
+            isExamMode = false;
+            document.getElementById('panel-exam').style.display = 'none';
+            document.getElementById('panel-game').style.display = 'flex';
+            document.getElementById('main-subtitle').innerText = "Utilize as coordenadas (X, Y) para mover as peças.";
+            fecharModal('modal-certificado');
+            
+            reiniciarPartida(true); // true = não pedir confirmação
+        }
+
+
+        /* ================= LÓGICA DO TABULEIRO ================= */
         function initBoard() {
             boardState = [];
             for (let rowIdx = 0; rowIdx < 8; rowIdx++) {
@@ -181,78 +495,86 @@
                 boardState.push(row);
             }
         }
-
+ 
         function drawBoard() {
             const board = document.getElementById('board');
             const yAxis = document.getElementById('y-axis');
             const xAxis = document.getElementById('x-axis');
-            
+             
             board.innerHTML = ''; yAxis.innerHTML = ''; xAxis.innerHTML = '';
-
-            // Lógica de Rotação Baseada no Turno
+ 
             let yStart = currentPlayer === 1 ? 7 : 0;
             let yEnd = currentPlayer === 1 ? -1 : 8;
             let yStep = currentPlayer === 1 ? -1 : 1;
-
+ 
             let xStart = currentPlayer === 1 ? 0 : 7;
             let xEnd = currentPlayer === 1 ? 8 : -1;
             let xStep = currentPlayer === 1 ? 1 : -1;
-
-            // Renderiza eixo X invertido ou normal
+ 
+            // Desenha Eixo X
             for (let x = xStart; x !== xEnd; x += xStep) {
                 let xLabel = document.createElement('div');
-                xLabel.className = 'x-label';
-                xLabel.innerText = x;
+                xLabel.className = 'x-label'; xLabel.innerText = x;
                 xAxis.appendChild(xLabel);
             }
-
-            // Renderiza Tabuleiro e Eixo Y invertidos ou normais
+ 
+            // Desenha Eixo Y e Tabuleiro
             for (let yVal = yStart; yVal !== yEnd; yVal += yStep) {
                 let rowIdx = 7 - yVal; 
-                
                 let yLabel = document.createElement('div');
-                yLabel.className = 'y-label';
-                yLabel.innerText = yVal;
+                yLabel.className = 'y-label'; yLabel.innerText = yVal;
                 yAxis.appendChild(yLabel);
-
+ 
                 let rowDiv = document.createElement('div');
                 rowDiv.className = 'board-row';
-                
+                 
                 for (let xVal = xStart; xVal !== xEnd; xVal += xStep) {
                     let colIdx = xVal;
                     let square = document.createElement('div');
                     let isDark = (xVal + yVal) % 2 === 0;
-                    
+                     
                     square.className = 'square ' + (isDark ? 'dark' : 'light');
 
-                    let pieceVal = boardState[rowIdx][colIdx];
-                    if (pieceVal !== 0) {
-                        let piece = document.createElement('div');
-                        piece.className = 'piece ' + (isRed(pieceVal) ? 'red' : 'black');
-                        if (isDama(pieceVal)) piece.innerText = '👑';
-                        square.appendChild(piece);
+                    if (isExamMode) {
+                        const q = examQuestions[currentQuestionIdx];
+                        // Se for questão tipo B, torna a casa clicável
+                        if (q && q.type === 'B') {
+                            square.classList.add('clickable');
+                            square.onclick = () => examSquareClick(xVal, yVal);
+                        }
+
+                        // Se for questão tipo A, desenha UMA peça piscando no lugar alvo
+                        if (q && q.type === 'A' && xVal === q.x && yVal === q.y) {
+                            let piece = document.createElement('div');
+                            piece.className = 'piece red piece-highlight';
+                            square.appendChild(piece);
+                        }
+                    } else {
+                        // Jogo Normal: renderiza peças do boardState
+                        let pieceVal = boardState[rowIdx][colIdx];
+                        if (pieceVal !== 0) {
+                            let piece = document.createElement('div');
+                            piece.className = 'piece ' + (isRed(pieceVal) ? 'red' : 'black');
+                            if (isDama(pieceVal)) piece.innerText = '👑';
+                            square.appendChild(piece);
+                        }
                     }
+
                     rowDiv.appendChild(square);
                 }
                 board.appendChild(rowDiv);
             }
         }
-
-        function mostrarMensagem(msg, isError = true, persistent = false) {
-            const msgDiv = document.getElementById('message');
-            msgDiv.innerText = msg;
-            msgDiv.style.opacity = '1';
-            msgDiv.style.transform = 'scale(1)';
-            msgDiv.style.padding = '12px';
-            msgDiv.style.color = '#fff';
-            msgDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
-            msgDiv.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
-
-            if (!isError && !persistent) {
-                setTimeout(() => {
-                    msgDiv.style.opacity = '0';
-                    msgDiv.style.transform = 'scale(0.8)';
-                }, 3000);
+ 
+        /* ================= LÓGICA DO JOGO DE DAMAS NORMAL ================= */
+        function reiniciarPartida(force = false) {
+            if(force || confirm("Tem certeza que deseja reiniciar o jogo?")) {
+                currentPlayer = 1; turnState = 'normal'; activePiece = null;
+                document.getElementById('btn-jogar').disabled = false;
+                document.getElementById('turn-display').innerHTML = `VEZ DAS <br><span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>`;
+                limparInputs();
+                mostrarMensagem("Jogo Reiniciado!", false);
+                initBoard(); drawBoard();
             }
         }
 
@@ -261,30 +583,22 @@
             document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = '';
             document.getElementById('orig-x').focus();
         }
-
+ 
         function getPathPieces(ox, oy, dx, dy) {
             let pieces = [];
             let steps = Math.abs(dx - ox);
-            let dirX = (dx - ox) > 0 ? 1 : -1;
-            let dirY = (dy - oy) > 0 ? 1 : -1;
-            
+            let dirX = (dx - ox) > 0 ? 1 : -1; let dirY = (dy - oy) > 0 ? 1 : -1;
             for (let i = 1; i < steps; i++) {
-                let checkX = ox + (i * dirX);
-                let checkY = oy + (i * dirY);
+                let checkX = ox + (i * dirX), checkY = oy + (i * dirY);
                 let r = 7 - checkY, c = checkX;
-                if (boardState[r][c] !== 0) {
-                    pieces.push({x: checkX, y: checkY, val: boardState[r][c], r: r, c: c});
-                }
+                if (boardState[r][c] !== 0) pieces.push({x: checkX, y: checkY, val: boardState[r][c], r: r, c: c});
             }
             return pieces;
         }
-
+ 
         function hasAvailableCaptures(startX, startY) {
-            let r = 7 - startY, c = startX;
-            let piece = boardState[r][c];
-            let pOwner = getPlayer(piece);
+            let r = 7 - startY, c = startX, piece = boardState[r][c], pOwner = getPlayer(piece);
             let dirs = [[1,1], [1,-1], [-1,1], [-1,-1]];
-            
             for (let d of dirs) {
                 if (isDama(piece)) {
                     let step = 1, foundEnemy = false;
@@ -298,24 +612,20 @@
                                 if (foundEnemy) break; 
                                 foundEnemy = true;
                             }
-                        } else if (foundEnemy) {
-                            return true; // Há uma casa vazia após o inimigo
-                        }
+                        } else if (foundEnemy) return true; 
                         step++;
                     }
                 } else {
                     let tx = startX + d[0]*2, ty = startY + d[1]*2;
                     let mx = startX + d[0], my = startY + d[1];
                     if (tx >= 0 && tx <= 7 && ty >= 0 && ty <= 7) {
-                        if (boardState[7 - ty][tx] === 0 && boardState[7 - my][mx] !== 0 && getPlayer(boardState[7 - my][mx]) !== pOwner) {
-                            return true;
-                        }
+                        if (boardState[7 - ty][tx] === 0 && boardState[7 - my][mx] !== 0 && getPlayer(boardState[7 - my][mx]) !== pOwner) return true;
                     }
                 }
             }
             return false;
         }
-
+ 
         function checkWin() {
             let redCount = 0, blackCount = 0;
             for(let r=0; r<8; r++) {
@@ -324,39 +634,29 @@
                     if(isBlack(boardState[r][c])) blackCount++;
                 }
             }
-            if (redCount === 0) return 2;
-            if (blackCount === 0) return 1;
-            return 0;
+            if (redCount === 0) return 2; if (blackCount === 0) return 1; return 0;
         }
-
+ 
         function fazerJogada() {
-            let ox = parseInt(document.getElementById('orig-x').value);
-            let oy = parseInt(document.getElementById('orig-y').value);
-            let dx = parseInt(document.getElementById('dest-x').value);
-            let dy = parseInt(document.getElementById('dest-y').value);
-
+            if(isExamMode) return; // Segurança
+            
+            let ox = parseInt(document.getElementById('orig-x').value), oy = parseInt(document.getElementById('orig-y').value);
+            let dx = parseInt(document.getElementById('dest-x').value), dy = parseInt(document.getElementById('dest-y').value);
+ 
             if (isNaN(ox) || isNaN(oy) || isNaN(dx) || isNaN(dy)) return mostrarMensagem("Preencha todas as coordenadas!");
             if (ox<0 || ox>7 || oy<0 || oy>7 || dx<0 || dx>7 || dy<0 || dy>7) return mostrarMensagem("Fora do limite (Use 0 a 7)!");
-
-            if (turnState === 'multi_jump') {
-                if (ox !== activePiece.x || oy !== activePiece.y) {
-                    return mostrarMensagem(`Capture com a peça em (${activePiece.x}, ${activePiece.y})!`);
-                }
-            }
-
-            let oCol = ox, oRow = 7 - oy;
-            let dCol = dx, dRow = 7 - dy;
-            let piece = boardState[oRow][oCol];
-            let pOwner = getPlayer(piece);
-            
+            if (turnState === 'multi_jump' && (ox !== activePiece.x || oy !== activePiece.y)) return mostrarMensagem(`Capture com a peça em (${activePiece.x}, ${activePiece.y})!`);
+ 
+            let oCol = ox, oRow = 7 - oy, dCol = dx, dRow = 7 - dy;
+            let piece = boardState[oRow][oCol], pOwner = getPlayer(piece);
+             
             if (piece === 0) return mostrarMensagem("Casa de origem vazia!");
             if (pOwner !== currentPlayer) return mostrarMensagem(`Vez das ${currentPlayer === 1 ? 'VERMELHAS' : 'PRETAS'}!`);
             if (boardState[dRow][dCol] !== 0) return mostrarMensagem("Casa de destino ocupada!");
             if (Math.abs(dx - ox) !== Math.abs(dy - oy)) return mostrarMensagem("Movimento deve ser na diagonal!");
-
-            let diffX = dx - ox, diffY = dy - oy;
-            let moveu = false, capturou = false;
-
+ 
+            let diffX = dx - ox, diffY = dy - oy, moveu = false, capturou = false;
+ 
             if (isDama(piece)) {
                 let pathPieces = getPathPieces(ox, oy, dx, dy);
                 if (pathPieces.length === 0) {
@@ -364,69 +664,95 @@
                     boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true;
                 } else if (pathPieces.length === 1) {
                     if (getPlayer(pathPieces[0].val) === pOwner) return mostrarMensagem("Não pode capturar a própria peça!");
-                    boardState[pathPieces[0].r][pathPieces[0].c] = 0; // Remove capturada
-                    boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0;
-                    moveu = true; capturou = true;
-                } else {
-                    return mostrarMensagem("Movimento inválido! Muitas peças no caminho.");
-                }
+                    boardState[pathPieces[0].r][pathPieces[0].c] = 0; 
+                    boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true; capturou = true;
+                } else return mostrarMensagem("Movimento inválido! Muitas peças no caminho.");
             } else {
                 let direcaoY = (pOwner === 1) ? 1 : -1; 
                 if (Math.abs(diffX) === 1 && diffY === direcaoY) {
                     if (turnState === 'multi_jump') return mostrarMensagem("Você é obrigado a capturar!");
                     boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true;
-                } 
-                else if (Math.abs(diffX) === 2 && Math.abs(diffY) === 2) {
-                    let meioCol = oCol + (diffX / 2), meioRow = oRow - (diffY / 2); 
-                    let pecaCapturada = boardState[meioRow][meioCol];
+                } else if (Math.abs(diffX) === 2 && Math.abs(diffY) === 2) {
+                    let meioCol = oCol + (diffX / 2), meioRow = oRow - (diffY / 2), pecaCapturada = boardState[meioRow][meioCol];
                     if (pecaCapturada !== 0 && getPlayer(pecaCapturada) !== pOwner) {
-                        boardState[meioRow][meioCol] = 0; boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0;
-                        moveu = true; capturou = true;
-                    } else {
-                        return mostrarMensagem("Captura inválida!");
-                    }
-                } else {
-                    return mostrarMensagem("Movimento não permitido!");
-                }
+                        boardState[meioRow][meioCol] = 0; boardState[dRow][dCol] = piece; boardState[oRow][oCol] = 0; moveu = true; capturou = true;
+                    } else return mostrarMensagem("Captura inválida!");
+                } else return mostrarMensagem("Movimento não permitido!");
             }
-
+ 
             if (moveu) {
                 let promoted = false;
                 if (!isDama(piece)) {
                     if (pOwner === 1 && dy === 7) { boardState[dRow][dCol] = 3; promoted = true; }
                     if (pOwner === 2 && dy === 0) { boardState[dRow][dCol] = 4; promoted = true; }
                 }
-
-                if (capturou && !promoted && hasAvailableCaptures(dx, dy)) {
-                    turnState = 'multi_jump';
-                    activePiece = {x: dx, y: dy};
-                    mostrarMensagem(`Continue capturando com a peça em (${dx}, ${dy})!`, false, true);
-                    document.getElementById('orig-x').value = dx; document.getElementById('orig-y').value = dy;
-                    document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = '';
-                    document.getElementById('dest-x').focus();
-                } else {
-                    turnState = 'normal'; activePiece = null;
-                    currentPlayer = currentPlayer === 1 ? 2 : 1;
-                    let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
-                    document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
-                    mostrarMensagem("JOGADA FEITA!", false);
-                    limparInputs();
-                }
-
-                drawBoard();
-
+ 
+                // Primeiro, checamos a vitória. Se alguém ganhou, não precisamos virar a tela.
                 let winner = checkWin();
                 if (winner !== 0) {
+                    drawBoard();
                     let winColor = winner === 1 ? 'VERMELHAS' : 'PRETAS';
                     document.getElementById('turn-display').innerHTML = `🏆 VITÓRIA DAS <br><span style="color:${winner===1?'#ff4757':'#2f3542'};">${winColor}</span> 🏆`;
                     document.getElementById('btn-jogar').disabled = true;
                     mostrarMensagem(`FIM DE JOGO! As ${winColor} venceram!`, false, true);
+                    return; // Sai da função
+                }
+
+                // Verifica se há saltos múltiplos
+                if (capturou && !promoted && hasAvailableCaptures(dx, dy)) {
+                    turnState = 'multi_jump'; activePiece = {x: dx, y: dy};
+                    mostrarMensagem(`Continue capturando com a peça em (${dx}, ${dy})!`, false, true);
+                    document.getElementById('orig-x').value = dx; document.getElementById('orig-y').value = dy;
+                    document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = ''; document.getElementById('dest-x').focus();
+                    
+                    drawBoard(); // Atualiza a tela normalmente, sem trocar de turno
+                } else {
+                    turnState = 'normal'; activePiece = null;
+                    mostrarMensagem("JOGADA FEITA!", false); limparInputs();
+                    
+                    // 1. Desenha o tabuleiro ANTES de inverter a perspectiva (mostra a jogada finalizada)
+                    drawBoard(); 
+                    
+                    // 2. Trava o botão para evitar que o jogador clique várias vezes durante a pausa
+                    const btnJogar = document.getElementById('btn-jogar');
+                    btnJogar.disabled = true;
+
+                    // 3. Aguarda 1.5 segundos (1500 milissegundos)
+                    setTimeout(() => {
+                        // Troca o jogador
+                        currentPlayer = currentPlayer === 1 ? 2 : 1;
+                        let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
+                        document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
+                        
+                        // 4. Desenha o tabuleiro novamente (agora na perspectiva do novo jogador) e destrava o botão
+                        drawBoard(); 
+                        btnJogar.disabled = false;
+                    }, 1500);
                 }
             }
         }
 
+        /* ================= GERADOR DE PDF ================= */
+        function baixarCertificadoPDF() {
+            // Seleciona o elemento que queremos transformar em PDF
+            const elemento = document.getElementById('certificado-conteudo');
+            
+            // Configurações do PDF
+            const opcoes = {
+                margin:       10,
+                filename:     `Certificado_${studentName.replace(/\s+/g, '_')}.pdf`, // Nome do arquivo com o nome do aluno
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 }, // Aumenta a resolução
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // Formato deitado (paisagem)
+            };
+
+            // Gera e faz o download
+            html2pdf().set(opcoes).from(elemento).save();
+        }
+ 
+        // Inicializa o jogo normal ao carregar
         initBoard();
         drawBoard();
     </script>
-</body>
-</html>
+ 
+</body></html>
