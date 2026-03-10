@@ -1,8 +1,8 @@
-<html lang="pt-BR"><head>
+<html lang="pt-BR">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Damas no Plano Cartesiano</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,7 +37,7 @@
         .dark { background-color: #a0522d; } 
         .light { background-color: #f5deb3; }
         
-        /* Modificador para a Prova (Clicável) */
+        /* Modificador para a Atividade (Clicável) */
         .square.clickable:hover {
             opacity: 0.7; cursor: crosshair;
             box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
@@ -53,7 +53,7 @@
         .red { background-color: #ff4757; border: 4px solid #b33939; }
         .black { background-color: #2f3542; border: 4px solid #1e2229; }
         
-        /* Destaque para a Peça na Prova */
+        /* Destaque para a Peça na Atividade */
         @keyframes piscar {
             0% { box-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f; transform: scale(1); }
             50% { box-shadow: 0 0 20px #f1c40f, 0 0 30px #f1c40f; transform: scale(1.1); }
@@ -127,9 +127,9 @@
         .btn-jogar:active { transform: translateY(4px); box-shadow: 0 0 0 #219653; }
         .btn-jogar:disabled { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; cursor: not-allowed; }
 
-        .btn-prova { background-color: #8e44ad; box-shadow: 0 4px 0 #732d91; margin-top: 10px; }
-        .btn-prova:hover { background-color: #9b59b6; }
-        .btn-prova:active { transform: translateY(4px); box-shadow: 0 0 0 #732d91; }
+        .btn-atividade { background-color: #8e44ad; box-shadow: 0 4px 0 #732d91; margin-top: 10px; }
+        .btn-atividade:hover { background-color: #9b59b6; }
+        .btn-atividade:active { transform: translateY(4px); box-shadow: 0 0 0 #732d91; }
          
         #message {
             font-weight: 900; min-height: 24px; text-align: center; margin-top: 10px;
@@ -154,33 +154,10 @@
             font-weight: bold; color: #95a5a6; cursor: pointer; transition: color 0.2s;
         }
         .close-btn:hover { color: #e74c3c; }
-
-        /* Estilos do Certificado */
-        .certificado {
-            border: 12px solid #2c3e50; padding: 40px 30px; text-align: center;
-            background: #fffdf2; position: relative; font-family: 'Times New Roman', Times, serif;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto;
-        }
-        .certificado::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 2px solid #bdc3c7; pointer-events: none;
-        }
-        .cert-title { font-size: 32px; color: #8e44ad; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;}
-        .cert-subtitle { font-size: 18px; color: #7f8c8d; font-style: italic; margin-bottom: 30px; }
-        .cert-name { font-size: 36px; color: #2c3e50; font-weight: bold; border-bottom: 2px solid #34495e; display: inline-block; padding: 0 20px 5px 20px; margin-bottom: 20px;}
-        .cert-text { font-size: 20px; color: #333; line-height: 1.5; }
-        .cert-score { font-weight: bold; color: #27ae60; font-size: 24px;}
-        .cert-footer { margin-top: 40px; font-size: 16px; color: #95a5a6; font-style: italic; border-top: 1px solid #eee; padding-top: 15px;}
  
         footer {
             margin-top: 40px; padding: 20px 0; width: 100%; text-align: center;
             font-weight: 600; color: #7f8c8d; font-size: 16px;
-        }
-
-        /* Inputs de formulário gerais */
-        .form-input {
-            width: 100%; padding: 12px; font-size: 18px; border: 2px solid #ddd;
-            border-radius: 6px; box-sizing: border-box; margin-bottom: 20px; text-align: center;
         }
     </style>
 </head>
@@ -226,17 +203,17 @@
                 <button class="btn-jogar" onclick="fazerJogada()" id="btn-jogar">Enviar Jogada</button>
                 
                 <hr style="width: 100%; border: 1px solid #eee; margin: 10px 0;">
-                <button class="btn-jogar btn-prova" onclick="abrirModal('modal-identificacao')">📝 Iniciar Prova</button>
+                <button class="btn-jogar btn-atividade" onclick="iniciarAtividade()">📝 Iniciar Atividade</button>
                 
                 <div id="message"></div>
             </div>
 
             <div class="panel" id="panel-exam" style="display: none; border: 3px solid #8e44ad;">
-                <div class="current-turn" style="color: #8e44ad; font-size: 26px;">MODO PROVA</div>
+                <div class="current-turn" style="color: #8e44ad; font-size: 26px;">Modo Atividade</div>
                 
                 <div class="input-group" style="background: #fdf5ff; border-color: #e8daef;">
                     <div class="input-label" id="exam-question-text" style="font-size: 1.3em; color: #8e44ad;">
-                        Questão 1/10:<br>Qual a coordenada da peça em destaque?
+                        Exercício 1/10:<br>Qual a coordenada da peça em destaque?
                     </div>
                 </div>
 
@@ -248,8 +225,8 @@
                     </div>
                 </div>
 
-                <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91;" onclick="responderProvaTipoA()" id="btn-responder-prova">Responder</button>
-                <button class="btn-small btn-reiniciar" style="margin-top: 10px; width: 100%;" onclick="encerrarProva()">Sair da Prova</button>
+                <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91;" onclick="responderAtividadeTipoA()" id="btn-responder-prova">Responder</button>
+                <button class="btn-small btn-reiniciar" style="margin-top: 10px; width: 100%;" onclick="encerrarAtividade()">Sair da Atividade</button>
             </div>
         </div>
     </div>
@@ -264,39 +241,6 @@
                 <li><strong>Captura:</strong> Pule sobre a peça inimiga. Capturas em sequência são obrigatórias!</li>
                 <li><strong>Damas (👑):</strong> Andam livremente nas diagonais (frente e trás).</li>
             </ul>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-identificacao" onclick="fecharModalFora(event, 'modal-identificacao')">
-        <div class="modal-content">
-            <span class="close-btn" onclick="fecharModal('modal-identificacao')">×</span>
-            <h2 style="color: #8e44ad;">📝 Iniciar Prova</h2>
-            <p style="text-align: center; color: #555;">Digite seu nome completo para que saia no certificado em caso de aprovação (mínimo de 70% de acertos).</p>
-            <input type="text" id="aluno-nome" class="form-input" placeholder="Seu nome completo">
-            <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91; width: 100%;" onclick="iniciarProva()">Começar Prova</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-certificado">
-        <div style="background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 650px; display: flex; flex-direction: column; align-items: center;">
-            
-            <div class="certificado" id="certificado-conteudo" style="width: 100%; box-sizing: border-box;">
-                <div class="cert-title">Certificado de Excelência</div>
-                <div class="cert-subtitle">Matemática - Plano Cartesiano</div>
-                <div class="cert-text">Certificamos que o(a) aluno(a)</div>
-                <div class="cert-name" id="cert-nome-aluno">[Nome]</div>
-                <div class="cert-text">
-                    concluiu a Prova Prática de Coordenadas com aproveitamento de <br>
-                    <span class="cert-score" id="cert-nota">100% (10/10)</span>.
-                </div>
-                <div class="cert-footer">Emitido pelo sistema interativo de ensino experimentajoao.</div>
-            </div>
-
-            <div style="display: flex; gap: 15px; margin-top: 20px; width: 100%;">
-                <button class="btn-jogar" style="flex: 1; background-color: #3498db; box-shadow: 0 4px 0 #2980b9;" onclick="baixarCertificadoPDF()">📥 Baixar PDF</button>
-                <button class="btn-jogar" style="flex: 1;" onclick="encerrarProva()">Voltar ao Jogo</button>
-            </div>
-
         </div>
     </div>
  
@@ -314,11 +258,9 @@
         const isDama = (p) => p === 3 || p === 4;
         const getPlayer = (p) => isRed(p) ? 1 : isBlack(p) ? 2 : 0;
 
-        /* ================= ESTADO DA PROVA ================= */
-        let isExamMode = false;
-        let examScore = 0;
+        /* ================= ESTADO DA ATIVIDADE ================= */
+        let isActivityMode = false;
         let currentQuestionIdx = 0;
-        let studentName = "";
         
         // Array de 10 Questões (Misto de Localizar e Clicar)
         const examQuestions = [
@@ -340,7 +282,7 @@
             modal.style.display = 'flex';
             setTimeout(() => {
                 modal.style.opacity = '1';
-                const content = modal.querySelector('.modal-content') || modal.querySelector('.certificado') || modal.firstElementChild;
+                const content = modal.querySelector('.modal-content') || modal.firstElementChild;
                 if(content) content.style.transform = 'scale(1)';
             }, 10);
         }
@@ -348,7 +290,7 @@
         function fecharModal(id) {
             const modal = document.getElementById(id);
             modal.style.opacity = '0';
-            const content = modal.querySelector('.modal-content') || modal.querySelector('.certificado') || modal.firstElementChild;
+            const content = modal.querySelector('.modal-content') || modal.firstElementChild;
             if(content) content.style.transform = 'scale(0.8)';
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
@@ -358,47 +300,59 @@
         }
 
         function mostrarMensagem(msg, isError = true, persistent = false) {
-            const msgDiv = document.getElementById('message');
+            // Usa o painel de mensagens do jogo ou da atividade dependendo do modo
+            const msgDiv = isActivityMode ? document.createElement('div') : document.getElementById('message');
+            
+            if(isActivityMode) {
+                // Cria um aviso temporário por cima da tela
+                msgDiv.style.position = 'fixed';
+                msgDiv.style.top = '20px';
+                msgDiv.style.left = '50%';
+                msgDiv.style.transform = 'translateX(-50%)';
+                msgDiv.style.zIndex = '2000';
+                msgDiv.style.borderRadius = '8px';
+                document.body.appendChild(msgDiv);
+            }
+
             msgDiv.innerText = msg;
-            msgDiv.style.opacity = '1'; msgDiv.style.transform = 'scale(1)';
-            msgDiv.style.padding = '12px'; msgDiv.style.color = '#fff';
-            msgDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.2)';
+            msgDiv.style.opacity = '1'; 
+            if(!isActivityMode) msgDiv.style.transform = 'scale(1)';
+            msgDiv.style.padding = '15px 25px'; msgDiv.style.color = '#fff';
+            msgDiv.style.fontWeight = 'bold'; msgDiv.style.fontSize = '1.2em';
+            msgDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
             msgDiv.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
  
-            if (!isError && !persistent) {
-                setTimeout(() => { msgDiv.style.opacity = '0'; msgDiv.style.transform = 'scale(0.8)'; }, 3000);
+            if (!persistent) {
+                setTimeout(() => { 
+                    msgDiv.style.opacity = '0'; 
+                    if(!isActivityMode) msgDiv.style.transform = 'scale(0.8)'; 
+                    if(isActivityMode) setTimeout(() => msgDiv.remove(), 300);
+                }, isError ? 2500 : 1500); // Erros ficam visíveis por mais tempo
             }
         }
 
-        /* ================= LÓGICA DA PROVA ================= */
-        function iniciarProva() {
-            const nomeInput = document.getElementById('aluno-nome').value.trim();
-            if(!nomeInput) {
-                alert("Por favor, digite seu nome para iniciar a prova.");
-                return;
-            }
-            studentName = nomeInput;
-            isExamMode = true;
-            examScore = 0;
+        /* ================= LÓGICA DA ATIVIDADE ================= */
+        function iniciarAtividade() {
+            isActivityMode = true;
             currentQuestionIdx = 0;
-            currentPlayer = 1; // Na prova, a visão é sempre travada na perspectiva normal.
+            currentPlayer = 1; // Na atividade, a visão é sempre travada na perspectiva normal.
             
-            fecharModal('modal-identificacao');
             document.getElementById('panel-game').style.display = 'none';
             document.getElementById('panel-exam').style.display = 'flex';
-            document.getElementById('main-subtitle').innerText = "Modo Prova Ativo: Concentre-se nas coordenadas!";
+            document.getElementById('main-subtitle').innerText = "Modo Atividade: Pratique suas coordenadas!";
             
-            carregarQuestaoProva();
+            carregarQuestaoAtividade();
         }
 
-        function carregarQuestaoProva() {
+        function carregarQuestaoAtividade() {
             if (currentQuestionIdx >= examQuestions.length) {
-                finalizarProva();
+                alert("🎉 Parabéns! Você concluiu todos os exercícios da atividade!");
+                encerrarAtividade();
                 return;
             }
 
             const q = examQuestions[currentQuestionIdx];
-            document.getElementById('exam-question-text').innerHTML = `<strong>Questão ${currentQuestionIdx + 1}/10:</strong><br>${q.text}`;
+            document.getElementById('exam-question-text').innerHTML = `<strong>Exercício ${currentQuestionIdx + 1}/10:</strong><br>${q.text}`;
 
             // Limpa inputs
             document.getElementById('exam-x').value = '';
@@ -415,10 +369,10 @@
                 document.getElementById('btn-responder-prova').style.display = 'none';
             }
 
-            drawBoard(); // O drawBoard se encarregará de desenhar o tabuleiro de prova baseado no isExamMode
+            drawBoard(); 
         }
 
-        function responderProvaTipoA() {
+        function responderAtividadeTipoA() {
             const x = parseInt(document.getElementById('exam-x').value);
             const y = parseInt(document.getElementById('exam-y').value);
             
@@ -428,57 +382,41 @@
 
             const q = examQuestions[currentQuestionIdx];
             if (x === q.x && y === q.y) {
-                examScore++;
-                mostrarMensagem("Correto!", false);
+                mostrarMensagem("✅ Correto! Muito bem.", false);
+                currentQuestionIdx++;
+                setTimeout(carregarQuestaoAtividade, 1500); 
             } else {
-                mostrarMensagem("Incorreto!", true);
+                mostrarMensagem("❌ Incorreto! Tente novamente.", true);
+                // Não incrementa o currentQuestionIdx, obrigando o aluno a acertar
+                document.getElementById('exam-x').value = '';
+                document.getElementById('exam-y').value = '';
+                document.getElementById('exam-x').focus();
             }
-
-            currentQuestionIdx++;
-            setTimeout(carregarQuestaoProva, 1000); // 1 segundo de pausa para ver a mensagem
         }
 
-        function examSquareClick(x, y) {
-            if (!isExamMode) return;
+        function activitySquareClick(x, y) {
+            if (!isActivityMode) return;
             const q = examQuestions[currentQuestionIdx];
             if (q.type !== 'B') return; // Só faz algo se for do tipo B
 
             if (x === q.x && y === q.y) {
-                examScore++;
-                mostrarMensagem("Correto! Clicou no lugar exato.", false);
+                mostrarMensagem("✅ Correto! Você clicou no lugar exato.", false);
+                currentQuestionIdx++;
+                setTimeout(carregarQuestaoAtividade, 1500);
             } else {
-                mostrarMensagem(`Errou! A coordenada correta era (${q.x}, ${q.y}).`, true);
-            }
-
-            currentQuestionIdx++;
-            setTimeout(carregarQuestaoProva, 1500);
-        }
-
-        function finalizarProva() {
-            const percentage = (examScore / examQuestions.length) * 100;
-            
-            if (percentage >= 70) {
-                // Aprovado: Mostra o certificado
-                document.getElementById('cert-nome-aluno').innerText = studentName;
-                document.getElementById('cert-nota').innerText = `${percentage}% (${examScore}/10)`;
-                abrirModal('modal-certificado');
-            } else {
-                // Reprovado: Mensagem simples
-                alert(`Prova Finalizada, ${studentName}.\nSua nota foi ${examScore}/10 (${percentage}%).\nVocê precisa de 70% ou mais para o certificado. Tente novamente!`);
-                encerrarProva();
+                mostrarMensagem(`❌ Você clicou em (${x}, ${y}). Tente novamente!`, true);
+                // O aluno continua na mesma questão até acertar
             }
         }
 
-        function encerrarProva() {
-            isExamMode = false;
+        function encerrarAtividade() {
+            isActivityMode = false;
             document.getElementById('panel-exam').style.display = 'none';
             document.getElementById('panel-game').style.display = 'flex';
             document.getElementById('main-subtitle').innerText = "Utilize as coordenadas (X, Y) para mover as peças.";
-            fecharModal('modal-certificado');
             
             reiniciarPartida(true); // true = não pedir confirmação
         }
-
 
         /* ================= LÓGICA DO TABULEIRO ================= */
         function initBoard() {
@@ -535,12 +473,12 @@
                      
                     square.className = 'square ' + (isDark ? 'dark' : 'light');
 
-                    if (isExamMode) {
+                    if (isActivityMode) {
                         const q = examQuestions[currentQuestionIdx];
                         // Se for questão tipo B, torna a casa clicável
                         if (q && q.type === 'B') {
                             square.classList.add('clickable');
-                            square.onclick = () => examSquareClick(xVal, yVal);
+                            square.onclick = () => activitySquareClick(xVal, yVal);
                         }
 
                         // Se for questão tipo A, desenha UMA peça piscando no lugar alvo
@@ -638,7 +576,7 @@
         }
  
         function fazerJogada() {
-            if(isExamMode) return; // Segurança
+            if(isActivityMode) return; // Segurança
             
             let ox = parseInt(document.getElementById('orig-x').value), oy = parseInt(document.getElementById('orig-y').value);
             let dx = parseInt(document.getElementById('dest-x').value), dy = parseInt(document.getElementById('dest-y').value);
@@ -687,7 +625,6 @@
                     if (pOwner === 2 && dy === 0) { boardState[dRow][dCol] = 4; promoted = true; }
                 }
  
-                // Primeiro, checamos a vitória. Se alguém ganhou, não precisamos virar a tela.
                 let winner = checkWin();
                 if (winner !== 0) {
                     drawBoard();
@@ -695,59 +632,35 @@
                     document.getElementById('turn-display').innerHTML = `🏆 VITÓRIA DAS <br><span style="color:${winner===1?'#ff4757':'#2f3542'};">${winColor}</span> 🏆`;
                     document.getElementById('btn-jogar').disabled = true;
                     mostrarMensagem(`FIM DE JOGO! As ${winColor} venceram!`, false, true);
-                    return; // Sai da função
+                    return; 
                 }
 
-                // Verifica se há saltos múltiplos
                 if (capturou && !promoted && hasAvailableCaptures(dx, dy)) {
                     turnState = 'multi_jump'; activePiece = {x: dx, y: dy};
                     mostrarMensagem(`Continue capturando com a peça em (${dx}, ${dy})!`, false, true);
                     document.getElementById('orig-x').value = dx; document.getElementById('orig-y').value = dy;
                     document.getElementById('dest-x').value = ''; document.getElementById('dest-y').value = ''; document.getElementById('dest-x').focus();
                     
-                    drawBoard(); // Atualiza a tela normalmente, sem trocar de turno
+                    drawBoard(); 
                 } else {
                     turnState = 'normal'; activePiece = null;
                     mostrarMensagem("JOGADA FEITA!", false); limparInputs();
                     
-                    // 1. Desenha o tabuleiro ANTES de inverter a perspectiva (mostra a jogada finalizada)
                     drawBoard(); 
                     
-                    // 2. Trava o botão para evitar que o jogador clique várias vezes durante a pausa
                     const btnJogar = document.getElementById('btn-jogar');
                     btnJogar.disabled = true;
 
-                    // 3. Aguarda 1.5 segundos (1500 milissegundos)
                     setTimeout(() => {
-                        // Troca o jogador
                         currentPlayer = currentPlayer === 1 ? 2 : 1;
                         let turnText = currentPlayer === 1 ? '<span style="color:#ff4757; font-size: 1.2em;">VERMELHAS</span>' : '<span style="color:#2f3542; font-size: 1.2em;">PRETAS</span>';
                         document.getElementById('turn-display').innerHTML = `VEZ DAS <br>${turnText}`;
                         
-                        // 4. Desenha o tabuleiro novamente (agora na perspectiva do novo jogador) e destrava o botão
                         drawBoard(); 
                         btnJogar.disabled = false;
                     }, 1500);
                 }
             }
-        }
-
-        /* ================= GERADOR DE PDF ================= */
-        function baixarCertificadoPDF() {
-            // Seleciona o elemento que queremos transformar em PDF
-            const elemento = document.getElementById('certificado-conteudo');
-            
-            // Configurações do PDF
-            const opcoes = {
-                margin:       10,
-                filename:     `Certificado_${studentName.replace(/\s+/g, '_')}.pdf`, // Nome do arquivo com o nome do aluno
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 }, // Aumenta a resolução
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' } // Formato deitado (paisagem)
-            };
-
-            // Gera e faz o download
-            html2pdf().set(opcoes).from(elemento).save();
         }
  
         // Inicializa o jogo normal ao carregar
@@ -755,4 +668,5 @@
         drawBoard();
     </script>
  
-</body></html>
+</body>
+</html>
