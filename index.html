@@ -316,23 +316,15 @@
              
             board.innerHTML = ''; yAxis.innerHTML = ''; xAxis.innerHTML = '';
  
-            let yStart = currentPlayer === 1 ? 7 : 0;
-            let yEnd = currentPlayer === 1 ? -1 : 8;
-            let yStep = currentPlayer === 1 ? -1 : 1;
- 
-            let xStart = currentPlayer === 1 ? 0 : 7;
-            let xEnd = currentPlayer === 1 ? 8 : -1;
-            let xStep = currentPlayer === 1 ? 1 : -1;
- 
-            // Desenha Eixo X
-            for (let x = xStart; x !== xEnd; x += xStep) {
+            // Desenha Eixo X Fixo (0 a 7, da esquerda para a direita)
+            for (let x = 0; x <= 7; x++) {
                 let xLabel = document.createElement('div');
                 xLabel.className = 'x-label'; xLabel.innerText = x;
                 xAxis.appendChild(xLabel);
             }
  
-            // Desenha Eixo Y e Tabuleiro
-            for (let yVal = yStart; yVal !== yEnd; yVal += yStep) {
+            // Desenha Eixo Y e Tabuleiro Fixos (7 a 0, de cima para baixo)
+            for (let yVal = 7; yVal >= 0; yVal--) {
                 let rowIdx = 7 - yVal; 
                 let yLabel = document.createElement('div');
                 yLabel.className = 'y-label'; yLabel.innerText = yVal;
@@ -341,7 +333,7 @@
                 let rowDiv = document.createElement('div');
                 rowDiv.className = 'board-row';
                  
-                for (let xVal = xStart; xVal !== xEnd; xVal += xStep) {
+                for (let xVal = 0; xVal <= 7; xVal++) {
                     let colIdx = xVal;
                     let square = document.createElement('div');
                     let isDark = (xVal + yVal) % 2 === 0;
@@ -526,3 +518,4 @@
  
 </body>
 </html>
+
