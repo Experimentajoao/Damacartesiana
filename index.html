@@ -36,12 +36,6 @@
         }
         .dark { background-color: #a0522d; } 
         .light { background-color: #f5deb3; }
-        
-        /* Modificador para a Atividade (Clicável) */
-        .square.clickable:hover {
-            opacity: 0.7; cursor: crosshair;
-            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
-        }
          
         /* Peças */
         .piece {
@@ -52,18 +46,6 @@
         }
         .red { background-color: #ff4757; border: 4px solid #b33939; }
         .black { background-color: #2f3542; border: 4px solid #1e2229; }
-        
-        /* Destaque para a Peça na Atividade */
-        @keyframes piscar {
-            0% { box-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f; transform: scale(1); }
-            50% { box-shadow: 0 0 20px #f1c40f, 0 0 30px #f1c40f; transform: scale(1.1); }
-            100% { box-shadow: 0 0 5px #f1c40f, 0 0 10px #f1c40f; transform: scale(1); }
-        }
-        .piece-highlight {
-            animation: piscar 1.5s infinite;
-            border-color: #f1c40f;
-            z-index: 10;
-        }
          
         /* Eixos Cartesianos */
         .y-axis { display: flex; flex-direction: column; width: 35px; }
@@ -154,6 +136,13 @@
             font-weight: bold; color: #95a5a6; cursor: pointer; transition: color 0.2s;
         }
         .close-btn:hover { color: #e74c3c; }
+        
+        .btn-link {
+            display: block; background: #8e44ad; color: white; padding: 12px 20px; 
+            text-decoration: none; border-radius: 6px; font-weight: bold; 
+            margin-top: 20px; text-align: center; transition: background 0.2s;
+        }
+        .btn-link:hover { background: #9b59b6; }
  
         footer {
             margin-top: 40px; padding: 20px 0; width: 100%; text-align: center;
@@ -207,27 +196,26 @@
                 
                 <div id="message"></div>
             </div>
+        </div>
+    </div>
 
-            <div class="panel" id="panel-exam" style="display: none; border: 3px solid #8e44ad;">
-                <div class="current-turn" style="color: #8e44ad; font-size: 26px;">Modo Atividade</div>
-                
-                <div class="input-group" style="background: #fdf5ff; border-color: #e8daef;">
-                    <div class="input-label" id="exam-question-text" style="font-size: 1.3em; color: #8e44ad;">
-                        Exercício 1/10:<br>Qual a coordenada da peça em destaque?
-                    </div>
-                </div>
+    <div class="modal-overlay" id="modal-anuncio" style="display: flex; opacity: 1;">
+        <div class="modal-content" style="transform: scale(1); text-align: center;">
+            <h2 style="color: #8e44ad; border-bottom: none;">Versão Completa Disponível!</h2>
+            <p style="font-size: 1.1em; color: #555;">Temos uma versão deste jogo <strong>mais completa</strong>, com atividade integrada diretamente ao app e planejamento totalmente alinhado à <strong>BNCC</strong>.</p>
+            <a href="https://chk.eduzz.com/1W3Z6N8GW2" target="_blank" class="btn-link">Conhecer Versão Completa</a>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <button class="btn-small btn-reiniciar" onclick="fecharModal('modal-anuncio')" style="width: 100%; padding: 12px; font-size: 16px;">Jogar Versão Gratuita</button>
+        </div>
+    </div>
 
-                <div class="input-group" id="exam-input-area">
-                    <div class="input-label">Digite a Coordenada:</div>
-                    <div class="input-row">
-                        X: <input type="number" id="exam-x" class="coord-input" min="0" max="7">
-                        Y: <input type="number" id="exam-y" class="coord-input" min="0" max="7">
-                    </div>
-                </div>
-
-                <button class="btn-jogar" style="background-color: #8e44ad; box-shadow: 0 4px 0 #732d91;" onclick="responderAtividadeTipoA()" id="btn-responder-prova">Responder</button>
-                <button class="btn-small btn-reiniciar" style="margin-top: 10px; width: 100%;" onclick="encerrarAtividade()">Sair da Atividade</button>
-            </div>
+    <div class="modal-overlay" id="modal-bloqueado" onclick="fecharModalFora(event, 'modal-bloqueado')">
+        <div class="modal-content" style="text-align: center;">
+            <span class="close-btn" onclick="fecharModal('modal-bloqueado')">×</span>
+            <h2 style="color: #8e44ad; border-bottom: none;">Função Exclusiva</h2>
+            <p style="font-size: 1.1em; color: #555;">O modo <strong>Atividade</strong> é uma funcionalidade exclusiva do nosso programa pago.</p>
+            <p style="font-size: 1em; color: #777;">Adquira a versão completa para ter acesso a atividades dinâmicas e planejamento de aulas alinhado à BNCC.</p>
+            <a href="https://chk.eduzz.com/1W3Z6N8GW2" target="_blank" class="btn-link">Acessar Versão Completa</a>
         </div>
     </div>
 
@@ -258,24 +246,6 @@
         const isDama = (p) => p === 3 || p === 4;
         const getPlayer = (p) => isRed(p) ? 1 : isBlack(p) ? 2 : 0;
 
-        /* ================= ESTADO DA ATIVIDADE ================= */
-        let isActivityMode = false;
-        let currentQuestionIdx = 0;
-        
-        // Array de 10 Questões (Misto de Localizar e Clicar)
-        const examQuestions = [
-            { type: 'A', x: 2, y: 5, text: "Qual a coordenada (X, Y) da peça piscando no tabuleiro?" },
-            { type: 'B', x: 5, y: 3, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (5, 3)." },
-            { type: 'A', x: 7, y: 0, text: "Localize a peça destacada e insira suas coordenadas abaixo." },
-            { type: 'B', x: 0, y: 6, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (0, 6)." },
-            { type: 'A', x: 3, y: 4, text: "Qual a coordenada da peça piscando?" },
-            { type: 'B', x: 4, y: 1, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (4, 1)." },
-            { type: 'A', x: 6, y: 7, text: "Onde está a peça? Insira X e Y." },
-            { type: 'B', x: 1, y: 2, text: "CLIQUE NO TABULEIRO na casa correspondente à coordenada (1, 2)." },
-            { type: 'A', x: 4, y: 5, text: "Localize a coordenada exata da peça." },
-            { type: 'B', x: 7, y: 4, text: "Para finalizar, CLIQUE na casa de coordenada (7, 4)." }
-        ];
-
         /* ================= CONTROLE DE MODAIS ================= */
         function abrirModal(id) {
             const modal = document.getElementById(id);
@@ -300,23 +270,11 @@
         }
 
         function mostrarMensagem(msg, isError = true, persistent = false) {
-            // Usa o painel de mensagens do jogo ou da atividade dependendo do modo
-            const msgDiv = isActivityMode ? document.createElement('div') : document.getElementById('message');
+            const msgDiv = document.getElementById('message');
             
-            if(isActivityMode) {
-                // Cria um aviso temporário por cima da tela
-                msgDiv.style.position = 'fixed';
-                msgDiv.style.top = '20px';
-                msgDiv.style.left = '50%';
-                msgDiv.style.transform = 'translateX(-50%)';
-                msgDiv.style.zIndex = '2000';
-                msgDiv.style.borderRadius = '8px';
-                document.body.appendChild(msgDiv);
-            }
-
             msgDiv.innerText = msg;
             msgDiv.style.opacity = '1'; 
-            if(!isActivityMode) msgDiv.style.transform = 'scale(1)';
+            msgDiv.style.transform = 'scale(1)';
             msgDiv.style.padding = '15px 25px'; msgDiv.style.color = '#fff';
             msgDiv.style.fontWeight = 'bold'; msgDiv.style.fontSize = '1.2em';
             msgDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
@@ -325,97 +283,14 @@
             if (!persistent) {
                 setTimeout(() => { 
                     msgDiv.style.opacity = '0'; 
-                    if(!isActivityMode) msgDiv.style.transform = 'scale(0.8)'; 
-                    if(isActivityMode) setTimeout(() => msgDiv.remove(), 300);
-                }, isError ? 2500 : 1500); // Erros ficam visíveis por mais tempo
+                    msgDiv.style.transform = 'scale(0.8)'; 
+                }, isError ? 2500 : 1500);
             }
         }
 
-        /* ================= LÓGICA DA ATIVIDADE ================= */
+        /* ================= AVISO DA ATIVIDADE PAGA ================= */
         function iniciarAtividade() {
-            isActivityMode = true;
-            currentQuestionIdx = 0;
-            currentPlayer = 1; // Na atividade, a visão é sempre travada na perspectiva normal.
-            
-            document.getElementById('panel-game').style.display = 'none';
-            document.getElementById('panel-exam').style.display = 'flex';
-            document.getElementById('main-subtitle').innerText = "Modo Atividade: Pratique suas coordenadas!";
-            
-            carregarQuestaoAtividade();
-        }
-
-        function carregarQuestaoAtividade() {
-            if (currentQuestionIdx >= examQuestions.length) {
-                alert("🎉 Parabéns! Você concluiu todos os exercícios da atividade!");
-                encerrarAtividade();
-                return;
-            }
-
-            const q = examQuestions[currentQuestionIdx];
-            document.getElementById('exam-question-text').innerHTML = `<strong>Exercício ${currentQuestionIdx + 1}/10:</strong><br>${q.text}`;
-
-            // Limpa inputs
-            document.getElementById('exam-x').value = '';
-            document.getElementById('exam-y').value = '';
-
-            // Configura visibilidade do input dependendo do tipo da questão
-            if (q.type === 'A') {
-                document.getElementById('exam-input-area').style.display = 'flex';
-                document.getElementById('btn-responder-prova').style.display = 'block';
-                document.getElementById('exam-x').focus();
-            } else {
-                // Tipo B: Espera clique no tabuleiro
-                document.getElementById('exam-input-area').style.display = 'none';
-                document.getElementById('btn-responder-prova').style.display = 'none';
-            }
-
-            drawBoard(); 
-        }
-
-        function responderAtividadeTipoA() {
-            const x = parseInt(document.getElementById('exam-x').value);
-            const y = parseInt(document.getElementById('exam-y').value);
-            
-            if (isNaN(x) || isNaN(y)) {
-                alert("Preencha X e Y para responder."); return;
-            }
-
-            const q = examQuestions[currentQuestionIdx];
-            if (x === q.x && y === q.y) {
-                mostrarMensagem("✅ Correto! Muito bem.", false);
-                currentQuestionIdx++;
-                setTimeout(carregarQuestaoAtividade, 1500); 
-            } else {
-                mostrarMensagem("❌ Incorreto! Tente novamente.", true);
-                // Não incrementa o currentQuestionIdx, obrigando o aluno a acertar
-                document.getElementById('exam-x').value = '';
-                document.getElementById('exam-y').value = '';
-                document.getElementById('exam-x').focus();
-            }
-        }
-
-        function activitySquareClick(x, y) {
-            if (!isActivityMode) return;
-            const q = examQuestions[currentQuestionIdx];
-            if (q.type !== 'B') return; // Só faz algo se for do tipo B
-
-            if (x === q.x && y === q.y) {
-                mostrarMensagem("✅ Correto! Você clicou no lugar exato.", false);
-                currentQuestionIdx++;
-                setTimeout(carregarQuestaoAtividade, 1500);
-            } else {
-                mostrarMensagem(`❌ Você clicou em (${x}, ${y}). Tente novamente!`, true);
-                // O aluno continua na mesma questão até acertar
-            }
-        }
-
-        function encerrarAtividade() {
-            isActivityMode = false;
-            document.getElementById('panel-exam').style.display = 'none';
-            document.getElementById('panel-game').style.display = 'flex';
-            document.getElementById('main-subtitle').innerText = "Utilize as coordenadas (X, Y) para mover as peças.";
-            
-            reiniciarPartida(true); // true = não pedir confirmação
+            abrirModal('modal-bloqueado');
         }
 
         /* ================= LÓGICA DO TABULEIRO ================= */
@@ -473,29 +348,12 @@
                      
                     square.className = 'square ' + (isDark ? 'dark' : 'light');
 
-                    if (isActivityMode) {
-                        const q = examQuestions[currentQuestionIdx];
-                        // Se for questão tipo B, torna a casa clicável
-                        if (q && q.type === 'B') {
-                            square.classList.add('clickable');
-                            square.onclick = () => activitySquareClick(xVal, yVal);
-                        }
-
-                        // Se for questão tipo A, desenha UMA peça piscando no lugar alvo
-                        if (q && q.type === 'A' && xVal === q.x && yVal === q.y) {
-                            let piece = document.createElement('div');
-                            piece.className = 'piece red piece-highlight';
-                            square.appendChild(piece);
-                        }
-                    } else {
-                        // Jogo Normal: renderiza peças do boardState
-                        let pieceVal = boardState[rowIdx][colIdx];
-                        if (pieceVal !== 0) {
-                            let piece = document.createElement('div');
-                            piece.className = 'piece ' + (isRed(pieceVal) ? 'red' : 'black');
-                            if (isDama(pieceVal)) piece.innerText = '👑';
-                            square.appendChild(piece);
-                        }
+                    let pieceVal = boardState[rowIdx][colIdx];
+                    if (pieceVal !== 0) {
+                        let piece = document.createElement('div');
+                        piece.className = 'piece ' + (isRed(pieceVal) ? 'red' : 'black');
+                        if (isDama(pieceVal)) piece.innerText = '👑';
+                        square.appendChild(piece);
                     }
 
                     rowDiv.appendChild(square);
@@ -576,8 +434,6 @@
         }
  
         function fazerJogada() {
-            if(isActivityMode) return; // Segurança
-            
             let ox = parseInt(document.getElementById('orig-x').value), oy = parseInt(document.getElementById('orig-y').value);
             let dx = parseInt(document.getElementById('dest-x').value), dy = parseInt(document.getElementById('dest-y').value);
  
